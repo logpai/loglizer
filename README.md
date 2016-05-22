@@ -1,8 +1,13 @@
 # loglizer
-A Python toolbox for anomaly detection via log analysis
+A Python toolkit for anomaly detection via log analysis
 
 ## Introduction
+System logs can be utilized to detect system anomalies, which plays an important role in the maintainence of large-scale distributed systems. In this toolbox, we implenmented and released six state-of-the-art log-based anomaly detection methods, including three supervised methods and three unsupervised methods. The framework of our anomaly detection toolbox are given as following:
+
 ## Framework
+Log collection => Log Parsing => Feature Creation => Anomaly Detection
+
+Log collection: Logs are generated and collected from systems.
 
 ## Anomaly detection Methods
 * Supervised Anomaly Detection
