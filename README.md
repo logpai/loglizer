@@ -6,10 +6,10 @@ A Python toolkit for anomaly detection via log analysis
 System logs can be utilized to detect system anomalies, which plays an important role in the maintainence of large-scale distributed systems. In this toolbox, we implenmented and released six state-of-the-art log-based anomaly detection methods, including three supervised methods and three unsupervised methods. The framework of our anomaly detection toolbox are given as following:
 
 ## Framework
-1. Log collection: Logs are generated and collected from systems, and saved as *.log file
-2. Log Parsing: Raw Logs are parsed to log events by log parsers.
-3. Feature Creation: Grouping Logs into log sequences with various windowing methods, and forme the event count vectors
-4. Anomaly Detection: Building anomaly detection model, and detecting anomalies.
+**1. Log collection:** Logs are generated and collected from systems, and saved as \*.log file.    
+**2. Log Parsing:** Raw Logs are parsed to log events by log parsers.  
+**3. Feature Creation:** Grouping Logs into log sequences with various windowing methods, and forme the event count vectors.  
+**4. Anomaly Detection:** Building anomaly detection model, and detecting anomalies.  
 
 ## Anomaly detection Methods
 * Supervised Anomaly Detection
