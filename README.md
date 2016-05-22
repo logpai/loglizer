@@ -11,6 +11,8 @@ System logs can be utilized to detect system anomalies, which plays an important
 **3. Feature Creation:** Grouping Logs into log sequences with various windowing methods, and forme the event count vectors.  
 **4. Anomaly Detection:** Building anomaly detection model, and detecting anomalies.  
 
+In our toolbox, we mainly focus on Step 3 (Feature Creation) and Step 4 (Anomaly Detection), because raw logs are collected as our dataset, and then parsed by our log parsing tool: [Logparser](https://github.com/cuhk-cse/logparser). Therefore, in our anomaly detection toolkit, the input is the parsed log events and the output is detected anomaly instances. 
+
 ## Anomaly detection Methods
 * Supervised Anomaly Detection
   1. Logistic Regression [Fingerprinting the Datacenter:Automated Classification of Performance Crises]()
