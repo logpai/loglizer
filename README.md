@@ -3,6 +3,13 @@ A Python toolkit for anomaly detection via log analysis
 
 We will give a brief introduction about anomaly detection first, next, the overview of framework is described. Finally, six anomay detection methods are given, together with the code and original papers.
 
+## Paper
+Our paper named "Experience Report: System Log Analysis for Anomaly Detection" have been accepted by the 27th International Symposium on Software Reliability Engineering (ISSRE 2016), Ottawa, Canada. Here is some detailed information:
+Title: Experience Report: System Log Analysis for Anomaly Detection
+Authors: Shilin He, Jieming Zhu, Pinjia He, and Michael R. Lyu
+
+Please feel free to contact us if you have any questions: slhe@cse.cuhk.edu.hk
+
 ***
 ## Introduction
 System logs can be utilized to detect system anomalies, which plays an important role in the maintainence of large-scale distributed systems. In this toolbox, we implenmented and released six state-of-the-art log-based anomaly detection methods, including three supervised methods and three unsupervised methods. The framework of our anomaly detection toolbox are given as following:
