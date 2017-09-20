@@ -13,7 +13,7 @@ Our paper is published on the 27th International Symposium on Software Reliabili
 Please feel free to contact us if you have any questions: slhe@cse.cuhk.edu.hk  
 
 ***
-## Introduction
+## Background
 Anomaly detection plays an important role in management of modern large-scale distributed systems. Logs, which record system runtime information, are widely used for anomaly detection. Traditionally, developers (or operators) often inspect the logs manually with keyword search and rule matching. The increasing scale and complexity of modern systems, however, make the volume of logs explode, which renders the infeasibility of manual inspection. To reduce manual effort, many anomaly detection methods based on automated log analysis are proposed.  
 In our paper, we provide a detailed review and evaluation of six state-of-the-art log-based anomaly detection methods, including three supervised methods and three unsupervised methods, and also release an open-source toolkit allowing ease of reuse. These methods have been evaluated on two publicly-available production log datasets.
 
@@ -21,15 +21,15 @@ The framework of our anomaly detection toolbox are given as following:
 
 ## Overview of framework
 **1. Log collection:** Logs are generated and collected by system and sofwares during running, which includes distributed systems (e.g., Spark, Hadoop), standalone systems (e.g., Windows, Mac OS) and softwares (e.g., Zookeeper).     
-**2. Log Parsing:** Raw Logs contain too much runtime information (e.g., IP address, file name). These variable information are often removed after log parsing as they are useless for debugging. After parsing, raw logs become log events, which are abstraction of raw logs. Details are given in our previous work: [Logparser](https://github.com/logpai/logparser)
-**3. Feature Extraction:** Logs are grouped into log sequences via Task ID or time, and these log sequences are vectorized and weighted.
-**4. Anomaly Detection:** Some machine learning models are trained and applied to detect anomalies.
+**2. Log Parsing:** Raw Logs contain too much runtime information (e.g., IP address, file name). These variable information are often removed after log parsing as they are useless for debugging. After parsing, raw logs become log events, which are abstraction of raw logs. Details are given in our previous work: [Logparser](https://github.com/logpai/logparser)  
+**3. Feature Extraction:** Logs are grouped into log sequences via Task ID or time, and these log sequences are vectorized and weighted.  
+**4. Anomaly Detection:** Some machine learning models are trained and applied to detect anomalies.  
 
 The framework is illustrated as follows:
 
  IMAGE HERE
 
-In our toolbox, we mainly focus on Feature Extraction and Anomaly Detection, Log Collection and Log Parsing are out of the scope of this project. To be more specific, the input is the parsed log events, and the output is whether it is anomaly for each log sequence. 
+In our toolbox, we mainly focus on Feature Extraction and Anomaly Detection, while Log Collection and Log Parsing are out of the scope of this project. To be more specific, the input is the parsed log events, and the output is whether it is anomaly for each log sequence. 
 
 ## Anomaly detection methods
 * ***Supervised Anomaly Detection:***  
