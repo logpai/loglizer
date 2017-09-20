@@ -3,9 +3,10 @@
 
 Loglizer is an open-source python tool for automatic anomaly detection via log analysis. In this project, six popular anomaly detection methods are implemented and compared on two public datasets, and detailed information (e.g., experimental results, findings) can be found in our [paper](http://ieeexplore.ieee.org/document/7774521/).
 
-## Paper
-Our paper named is published on the 27th International Symposium on Software Reliability Engineering (**ISSRE 2016**), Ottawa, Canada. The information can be found here:
+Notes: Recently, many researchers and developers emailed us for the datasets, but unfortunately some datasets cannot be distributed as we do not have the copyright. The good news is that we ([logpai](https://github.com/logpai)) are trying to public some log datasets ([loghub](https://github.com/logpai/loghub)). Please follow us for the latest progress.
 
+## Paper
+Our paper is published on the 27th International Symposium on Software Reliability Engineering (**ISSRE 2016**), Ottawa, Canada. The information can be found here:  
 **Title: Experience Report: System Log Analysis for Anomaly Detection**    
 **Authors:** Shilin He, Jieming Zhu, Pinjia He, and Michael R. Lyu  
 **Paper link:** [paper](http://ieeexplore.ieee.org/document/7774521/)   
@@ -13,15 +14,22 @@ Please feel free to contact us if you have any questions: slhe@cse.cuhk.edu.hk
 
 ***
 ## Introduction
-System logs can be utilized to detect system anomalies, which plays an important role in the maintainence of large-scale distributed systems. In this toolbox, we implenmented and released six state-of-the-art log-based anomaly detection methods, including three supervised methods and three unsupervised methods. The framework of our anomaly detection toolbox are given as following:
+Anomaly detection plays an important role in management of modern large-scale distributed systems. Logs, which record system runtime information, are widely used for anomaly detection. Traditionally, developers (or operators) often inspect the logs manually with keyword search and rule matching. The increasing scale and complexity of modern systems, however, make the volume of logs explode, which renders the infeasibility of manual inspection. To reduce manual effort, many anomaly detection methods based on automated log analysis are proposed.  
+In our paper, we provide a detailed review and evaluation of six state-of-the-art log-based anomaly detection methods, including three supervised methods and three unsupervised methods, and also release an open-source toolkit allowing ease of reuse. These methods have been evaluated on two publicly-available production log datasets.
+
+The framework of our anomaly detection toolbox are given as following:
 
 ## Overview of framework
-**1. Log collection:** Logs are generated and collected from systems, and saved as \*.log file.    
-**2. Log Parsing:** Raw Logs are parsed to log events by log parsers.  
-**3. Feature Creation:** Grouping Logs into log sequences with various windowing methods, and forme the event count vectors.  
-**4. Anomaly Detection:** Building anomaly detection model, and detecting anomalies.  
+**1. Log collection:** Logs are generated and collected by system and sofwares during running, which includes distributed systems (e.g., Spark, Hadoop), standalone systems (e.g., Windows, Mac OS) and softwares (e.g., Zookeeper).     
+**2. Log Parsing:** Raw Logs contain too much runtime information (e.g., IP address, file name). These variable information are often removed after log parsing as they are useless for debugging. After parsing, raw logs become log events, which are abstraction of raw logs. Details are given in our previous work: [Logparser](https://github.com/logpai/logparser)
+**3. Feature Extraction:** Logs are grouped into log sequences via Task ID or time, and these log sequences are vectorized and weighted.
+**4. Anomaly Detection:** Some machine learning models are trained and applied to detect anomalies.
 
-In our toolbox, we mainly focus on Step 3 (Feature Creation) and Step 4 (Anomaly Detection), because raw logs are collected as our dataset, and then parsed by our log parsing tool: [Logparser](https://github.com/cuhk-cse/logparser). In our anomaly detection toolkit, the input is the parsed log events and the output is detected anomaly instances. 
+The framework is illustrated as follows:
+
+ IMAGE HERE
+
+In our toolbox, we mainly focus on Feature Extraction and Anomaly Detection, Log Collection and Log Parsing are out of the scope of this project. To be more specific, the input is the parsed log events, and the output is whether it is anomaly for each log sequence. 
 
 ## Anomaly detection methods
 * ***Supervised Anomaly Detection:***  
@@ -39,6 +47,3 @@ In our toolbox, we mainly focus on Step 3 (Feature Creation) and Step 4 (Anomaly
   **3. Invariants Mining:**  
   paper: [Mining Invariants from Console Logs for System Problem Detection](http://research.microsoft.com/pubs/121673/Mining%20Invariants%20from%20Console%20Logs.pdf)  
   
-  We release the code here: [code](https://github.com/cuhk-cse/loglizer)
-
-test
