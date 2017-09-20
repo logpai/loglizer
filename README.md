@@ -40,4 +40,4 @@ In our toolbox, we mainly focus on Step 3 (Feature Creation) and Step 4 (Anomaly
   
   We release the code here: [code](https://github.com/cuhk-cse/loglizer)
 
-
+test
