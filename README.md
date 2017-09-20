@@ -1,13 +1,14 @@
 # loglizer
 **A Python toolkit for anomaly detection via log analysis**
 
-We will firstly give a brief introduction about anomaly detection, then, an overview of anomaly detection framework is described. Finally, six anomay detection methods are given, together with the code and original papers.
+Loglizer is an open-source python tool for automatic anomaly detection via log analysis. In this project, six popular anomaly detection methods are implemented and compared on two public datasets, and detailed information (e.g., experimental results, findings) can be found in our [paper](http://ieeexplore.ieee.org/document/7774521/).
 
 ## Paper
-Our paper named "Experience Report: System Log Analysis for Anomaly Detection" have been accepted by the 27th International Symposium on Software Reliability Engineering (**ISSRE 2016**), Ottawa, Canada.   
-Here is some detailed information:  
-**Title: Experience Report: System Log Analysis for Anomaly Detection  
-Authors: Shilin He, Jieming Zhu, Pinjia He, and Michael R. Lyu**  
+Our paper named is published on the 27th International Symposium on Software Reliability Engineering (**ISSRE 2016**), Ottawa, Canada. The information can be found here:
+
+**Title: Experience Report: System Log Analysis for Anomaly Detection**    
+**Authors:** Shilin He, Jieming Zhu, Pinjia He, and Michael R. Lyu  
+**Paper link:** [paper](http://ieeexplore.ieee.org/document/7774521/)   
 Please feel free to contact us if you have any questions: slhe@cse.cuhk.edu.hk  
 
 ***
