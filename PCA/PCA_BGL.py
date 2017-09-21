@@ -13,18 +13,18 @@ import os
 #=====================================================
 
 para={
-'path':'../Data/BGL_data/',
-'logfileName':'BGL_MERGED.log',  			# newtestData_25w   BGL_MERGED
-'mapLogTemplate':'logTemplateMap.csv',  	# data that restore the template index of each log 
-'selectColumn':[0,4],                       # select the corresponding columns in the raw data
-'timeIndex':1,                              # the index of time in the selected columns, start from 0
-'timeInterval':6,                        	# the size of time window with unit of hours
-'slidingWindow':1,  						#the size of sliding window interval with unit of hour
-'fraction':0.95,
-'c_alpha':8.1,
+'path':'../Data/BGL_data/', #data path
+'logfileName':'BGL_MERGED.log', #raw log data filename
+'mapLogTemplate':'logTemplateMap.csv', # log event mapping relation list, obtained from log parsing
+'selectColumn':[0,4],          # select the corresponding columns in the raw data
+'timeIndex':1,                # the index of time in the selected columns, start from 0
+'timeInterval':6,             # the size of time window with unit of hours
+'slidingWindow':1,  		#the size of sliding window interval with unit of hour
+'fraction':0.95,			# how much variance should be kept during PCA
+'c_alpha':8.1,				# threhold
 }
 
-def processData(para):	
+def processData(para):
 	print('for BGL data using PCA')
 	print('Loading data...')
 	filePath=para['path']+para['logfileName']
@@ -40,17 +40,17 @@ def processData(para):
 	print('we have %d logs in this file'%logNum)
 
 	#=================divide into time windows=============#
-	twStartEndTuple=[]   #list of tuples, tuple contains two number, which represent the start and end of sliding time window, i.e. (1,5),(2,6),(3,7) 
+	twStartEndTuple=[]   #list of tuples, tuple contains two number, which represent the start and end of sliding time window, i.e. (1,5),(2,6),(3,7)
 	if not os.path.exists('../timeWindowCSV/slidingWindowIndex_'+str(para['timeInterval'])+'h_'+str(para['slidingWindow'])+'h.csv'):
-		 
+
 		startTime=time.mktime(datetime.datetime.strptime(dataLL[0][para['timeIndex']], "%Y-%m-%d-%H.%M.%S.%f").timetuple())
-		timeWindow=1		
+		timeWindow=1
 		t=startTime
 		firstStartEndLog=tuple()
 		startLog=0
 		endLog=0
 		for row in dataLL:
-			timeStamp=time.mktime(datetime.datetime.strptime(row[para['timeIndex']], "%Y-%m-%d-%H.%M.%S.%f").timetuple())	
+			timeStamp=time.mktime(datetime.datetime.strptime(row[para['timeIndex']], "%Y-%m-%d-%H.%M.%S.%f").timetuple())
 			if timeStamp>=t and timeStamp<t+para['timeInterval']*3600:
 				endLog+=1
 				endTime=timeStamp
@@ -154,7 +154,7 @@ def getThreshold(para,sigma,numLines,U,numEvents):
 		if (tmp/tot)>=para['fraction']:
 			break
 	k=i+1
-	print ('principal components=%d' % (k))
+	print('principal components=%d' % (k))
 
 	for i in range(numEvents):
 		sigma[i]=sigma[i]*sigma[i]/float(numLines)
@@ -188,11 +188,11 @@ def getThreshold(para,sigma,numLines,U,numEvents):
 def anomalyDetect(para,data,C,threshold,numLines,labels):
 	i=0
 	trueAnomaly=labels[:]
-	print ('trueAnomaly=%d' % (sum(trueAnomaly)))
+	print('trueAnomaly=%d' % (sum(trueAnomaly)))
 
 	detectAnomaly=zeros((numLines),int)
 	SPEList=[]
-	print ('threshold=%f' % (threshold))
+	print('threshold=%f' % (threshold))
 	for i in range(numLines):
 		ya=dot(C,data[:,i])
 		SPE=dot(ya,ya)
@@ -200,17 +200,17 @@ def anomalyDetect(para,data,C,threshold,numLines,labels):
 			va= [SPE,1]
 		else:
 			va = [SPE,0]
-		SPEList.append(va) 
+		SPEList.append(va)
 		if SPE>threshold:
 			detectAnomaly[i]=1	#1 represent failure
-	print ('detectAnomaly=%d' % (sum(detectAnomaly)) )
+	print('detectAnomaly=%d' % (sum(detectAnomaly)) )
 
 	savetxt('SPEList.csv',SPEList,delimiter=',')
 	tot=0
 	for i in range(numLines):
 		if trueAnomaly[i]&detectAnomaly[i]:
 			tot+=1
-	print ('really true=%d' % (tot))
+	print('really true=%d' % (tot))
 	precision = tot/float(sum(detectAnomaly))
 	recall = tot/float(sum(trueAnomaly))
 	print('the precision is %.5f'%(precision))
@@ -218,38 +218,14 @@ def anomalyDetect(para,data,C,threshold,numLines,labels):
 	F_measure=2*precision*recall/(precision+recall)
 	print('F_measure is %.5f'%F_measure)
 	return sum(detectAnomaly),sum(trueAnomaly),tot,precision,recall,F_measure
-	
+
 def mainProcess(para):
 	rawData,numLines,numEvents,labels=processData(para)
 	data,U,sigma=computeData(rawData,numLines,numEvents)
 	threshold,C=getThreshold(para,sigma,numLines, U,numEvents)
 	predictFailure,testFailure,sameFailureNum,precision,recall,F_measure = anomalyDetect(para,data,C,threshold,numLines,labels)
-	print predictFailure,testFailure,sameFailureNum,precision,recall,F_measure  
+	print(predictFailure,testFailure,sameFailureNum,precision,recall,F_measure)
 	return predictFailure,testFailure,sameFailureNum,precision,recall,F_measure
 
-mainProcess(para)
-# def diffTime(para):
-# 	# c_alpha = 1.9600;  // alpha = 0.05
-# 	# c_alpha = 2.5758;  // alpha = 0.01
-# 	# c_alpha = 2.807;   // alpha = 0.005
-# 	# c_alpha = 2.9677;  // alpha = 0.003
-# 	# c_alpha = 3.2905;  // alpha = 0.001
-# 	# c_alpha = 3.4808;  // alpha = 0.0005
-# 	# c_alpha = 3.8906;  // alpha = 0.0001
-# 	# c_alpha = 4.4172;  // alpha = 0.00001
-# 	# c_alpha = 4.8916;  //alpha==0.00001
-# 	# c_alpha = 5.3267;  //alpha==0.000001
-
-# 	#for sliding window, calpha = 8.1 has the best result
-# 	timeList=[1,3,6,9,12]
-# 	#timeList=[0.0833333333, 0.5, 1, 3, 6]
-# 	tiLen=len(timeList)
-# 	result=zeros((tiLen,6))
-# 	i=0
-# 	for ti in timeList:
-# 		para['timeInterval']=ti
-# 		result[i,:]=mainProcess(para)
-# 		i+=1
-# 	print result
-# 	savetxt('Tune_slidingWindow_PCA_BGL_keep1h_ChangeInterval.csv',result,delimiter=',')
-# diffTime(para)
+if __name__ == '__main__':
+	mainProcess(para)

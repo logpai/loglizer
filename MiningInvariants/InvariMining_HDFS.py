@@ -9,16 +9,16 @@ import random
 import fractions as fr
 from itertools import combinations
 
-'''for SOSP data'''
-#============Mining Invariants on SOSP data==========#
+'''for HDFS data'''
+#============Mining Invariants on HDFS data==========#
 #													 #
 #													 #
 #=====================================================
 
 para={
-'path':'../Data/SOSP_data/',
-'matrixFile':'rm_repeat_rawTFVector.txt',   
-'labelFile':'rm_repeat_mlabel.txt',             
+'path':'../Data/HDFS_data/',
+'matrixFile':'rm_repeat_rawTFVector.txt',
+'labelFile':'rm_repeat_mlabel.txt',
 'epsilon':2.0,                          # threshold for the step of estimating invariant space
 'threshold':0.98,                       # how many percentage of vector Xj in matrix fit the condition that |Xj*Vi|<epsilon
 'Llist':[1,2,3],						# list used to sacle the theta of float into integer
@@ -42,7 +42,7 @@ def processData(para):
 	for laline in labellines:
 		lab=int(laline.split()[0])
 		labels[i]=lab
-		if lab==0:  
+		if lab==0:
 			sucRowCount+=1
 		i+=1
 	print('success label count is %d'%sucRowCount)
@@ -79,7 +79,7 @@ def estiInvaSpace(M,para):
 	M_trans_M=np.dot(M.T,M)/float(M.shape[0])
 	# SVD decomposition using the numpy.linalg.svd
 	u,s,v=np.linalg.svd(M_trans_M)
-	print("SVD decomposition results(U,S,V) size: ", u.shape,s.shape,v.shape) 
+	print("SVD decomposition results(U,S,V) size: ", u.shape,s.shape,v.shape)
 	#the sigular value are in descending order, so we start from the right most column in matrix v
 	#check whether more than threshold rows in M multiplies the above column smaller than the epsilon
 	feaNum=v.shape[1]
@@ -88,7 +88,7 @@ def estiInvaSpace(M,para):
 		colVec=v[i,:].T
 		count=0
 		for j in range(instaNum):
-			abso=abs(np.dot(M[j,:],colVec))         
+			abso=abs(np.dot(M[j,:],colVec))
 			if abso<para['epsilon']:
 				count+=1
 		if count<instaNum*para['threshold']:
@@ -116,7 +116,7 @@ def calMinTheta(M):
 	print(minVec)
 	return minVec.T,vecContainZero
 
-#scale the returned eigenVector of float into integer and check whether the scaled theta is valid(satisfy the threshold) 
+#scale the returned eigenVector of float into integer and check whether the scaled theta is valid(satisfy the threshold)
 #if valid, return True and the valid eigenVector, if not valid, return False and empty eigenVector
 def checkInvariValid(para,M,pList):
 	newMatrix=M[:,pList]
@@ -143,7 +143,7 @@ def checkInvariValid(para,M,pList):
 			if newZeroCount!=0:
 				continue
 			Xj_theta=np.dot(newMatrix,scaleTheta)
-			
+
 			zeroCount=0
 			for i in Xj_theta:
 				if np.fabs(i) < (1e-8):
@@ -154,7 +154,7 @@ def checkInvariValid(para,M,pList):
 				break
 		return valid,scaleTheta
 
-#find incariants 
+#find incariants
 searchSpace=[]     # only invariant candidates in this list are valid.
 def invariantSearch(dataMatrix, para, r):
 	''' Apriori framework to generate invariants candidates'''
@@ -162,23 +162,23 @@ def invariantSearch(dataMatrix, para, r):
 	(num_samples, num_features) = dataMatrix.shape
 	invariantDict = dict()	#save the mined Invariants(value) and its corrsponding columns(key)
 	itemList = sorted([[item] for item in xrange(num_features)])
-	
+
 	for item in itemList:
-		searchSpace.append(item) 
+		searchSpace.append(item)
 	newItemList=itemList[:]
 	for item in itemList:
 		#if (np.sum(dataMatrix[:, item] == 0)/float(num_samples))>= para['threshold']:
 		if np.sum(dataMatrix[:, item] == 0)== num_samples:
 			invariantDict[frozenset(item)] = [1]
 			searchSpace.remove(item)
-			newItemList.remove(item)			
+			newItemList.remove(item)
 	print ('the remaining features are: ',newItemList)
 
 	itemList=newItemList
 	iniLen=len(invariantDict)
 	length = 2
 	breakLoop=False
-	
+
 	while(len(itemList) != 0):
 		if para['stopOrNot']:
 			if len(itemList[0]) >= para['stopInvarNum']:
@@ -196,7 +196,7 @@ def invariantSearch(dataMatrix, para, r):
 			if  not validCandidate(frozenset(item), length, searchSpace) and length > 2:
 				searchSpace.remove(item)
 				continue 	#an item must be superset of all other subitems in searchSpace, else skip
-			
+
 			valid,scaleTheta=checkInvariValid(para,dataMatrix,item)
 			if valid==True:
 				prune(invariantDict.keys(),set(item),searchSpace)
@@ -208,7 +208,7 @@ def invariantSearch(dataMatrix, para, r):
 				breakLoop=True
 				break
 		if breakLoop==True:
-			break   
+			break
 		length += 1
 	return invariantDict
 
@@ -221,12 +221,12 @@ def prune(colSetList,newComingSet,searchSpace):
 		if len(intersection)==0:
 			continue
 		union = set(se) | newComingSet
-		for item in list(intersection):			
+		for item in list(intersection):
 			diff=sorted(list(union - set([item])))
 			if diff in searchSpace:
 				searchSpace.remove(diff)
 
-#generate new items with size of length 
+#generate new items with size of length
 def joinSet(itemList, length):
 	"""Join a set with itself and returns the n-element itemsets"""
 	setLen=len(itemList)
@@ -244,7 +244,7 @@ def joinSet(itemList, length):
 #check whether an item's subitems are in searchspace
 def validCandidate(item, length, searchSpace):
 	for subItem in combinations(item, length - 1):
-		if sorted(list(subItem)) not in searchSpace: 
+		if sorted(list(subItem)) not in searchSpace:
 			return False
 	return True
 
@@ -252,18 +252,16 @@ def validCandidate(item, length, searchSpace):
 def testing(selecRawData,validInvariList,validColList,realLabels):
 	predictLabel=[]
 	count=0
-	print selecRawData.shape
 	for row in selecRawData:
 		label=0
 		for i,cols in enumerate(validColList):
 			sumOfInva=0
-			for j, c in enumerate(cols): 
+			for j, c in enumerate(cols):
 				sumOfInva += validInvariList[i][j]*row[c]
 			if sumOfInva != 0:
 				label=1         # same as raw data that 1 represent failure
 				break
 		predictLabel.append(label)
-	print len(realLabels),len(predictLabel)
 
 	sameFailureNum=0
 	for i in range(len(predictLabel)):
@@ -287,7 +285,7 @@ def testing(selecRawData,validInvariList,validColList,realLabels):
 		elif tt==1:
 			testFailure+=1
 
-	print predictSuccess,predictFailure,testSuccess,testFailure,sameFailureNum
+	print (predictSuccess,predictFailure,testSuccess,testFailure,sameFailureNum)
 	if sameFailureNum==0:
 		print ('precision is 0 and recall is 0')
 	else:
@@ -303,36 +301,14 @@ def mainProcess(para):
 	noFailData,rawData,labels=processData(para)
 	r=estiInvaSpace(noFailData,para)
 	invariantDict=invariantSearch(noFailData, para, r)
-	print invariantDict,len(invariantDict)
+	print (invariantDict,len(invariantDict))
 	validColList=[]
 	validInvariList=[]
 	for key in invariantDict:
 		validColList.append(list(key))
 		validInvariList.append(list(invariantDict[key]))
 	predictFailure,testFailure,sameFailureNum,precision,recall,F_measure = testing(rawData,validInvariList,validColList,labels)
-	return predictFailure,testFailure,sameFailureNum,precision,recall,F_measure	
+	return predictFailure,testFailure,sameFailureNum,precision,recall,F_measure
 
-# mainProcess(para)
-def diffThreshold(para):
-	tiLen=len(threshold)
-	result=np.zeros((tiLen,6))
-	i=0
-	for ti in threshold:
-		result[i,:]=mainProcess(para)
-		i+=1
-	print result
-	np.savetxt('result_miningInvari_SOSP_5_times.csv',result,delimiter=',')
-
-diffThreshold(para)
-
-#0.98 0.99
-# {frozenset([7]): [1], frozenset([0]): [1], frozenset([6]): [1], frozenset([28]): [1], frozenset([13]): [1], frozenset([18]): [1],
-# frozenset([11]): [1], frozenset([14]): [1], frozenset([23]): [1], frozenset([16]): [1], frozenset([12]): [1], frozenset([9]): [1]
-# frozenset([8, 4]): array([ 1., -1.]),  frozenset([4, 21]): array([ 1., -3.]), frozenset([17, 5]): array([ 1., -1.]), 
-# frozenset([24, 5]): array([ 1., -1.]),  frozenset([20, 22]): array([ 1., -1.]), frozenset([25, 4]): array([-1.,  1.]),
-# frozenset([10, 4]): array([ 1., -1.]), frozenset([5, 15]): array([ 1., -1.]), frozenset([19, 5]): array([   1., -467.]),} 
-# 21
-
-#0.999
-#{frozenset([24, 5]): array([ 1., -1.]), frozenset([10, 4, 15]): array([ 1., -1., -1.]), frozenset([8, 4, 5]): array([ 1., -1., -1.]), frozenset([16]): [1], frozenset([9]): [1], frozenset([7]): [1], frozenset([0]): [1], frozenset([17, 10, 4]): array([ 1., -1., -1.]), frozenset([5, 15]): array([ 1., -1.]), frozenset([28]): [1], frozenset([17, 5]): array([ 1., -1.]), frozenset([24, 10, 4]): array([ 1., -1., -1.]), frozenset([13]): [1], frozenset([11]): [1], frozenset([25, 10, 4]): array([-2.,  1.,  1.]), frozenset([14]): [1], frozenset([23]): [1], frozenset([8, 10]): array([ 1., -1.]), frozenset([8, 21]): array([ 1., -3.]), frozenset([6]): [1], frozenset([18]): [1], frozenset([25, 4, 5]): array([ 1.,  1., -1.]), frozenset([12]): [1]} 
-#23
+if __name__ == '__main__':
+	mainProcess(para)

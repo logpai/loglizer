@@ -4,27 +4,27 @@ __author__ = 'Shilin He'
 import time,datetime
 import numpy as np
 import csv
-from sklearn import svm
-from sklearn.externals.six import StringIO  
-from IPython.display import Image  
+from sklearn.linear_model import LogisticRegression
 import pydot
 import math
 import os
+
 para={
-'path':'../Data/BGL_data/',
-'logfileName':'BGL_MERGED.log',
-'mapLogTemplate':'logTemplateMap.csv',
+'path':'../Data/BGL_data/', #data path
+'logfileName':'BGL_MERGED.log', #raw log data filename
+'mapLogTemplate':'logTemplateMap.csv', # log event mapping relation list, obtained from log parsing
 'selectColumn':[0,4], # select the corresponding columns in the raw data
 'timeIndex':1,  # the index of time in the selected columns, start from 0
 'timeInterval':6,  #the size of time window with unit of hour
 'slidingWindow':1,  #the size of sliding window interval with unit of hour
-'trainingSetPercent': 0.8, #which means how many(percentage) time windows would be regarded as training set
-'tf-idf':False,
-'balance':False
+'trainingSetPercent': 0.8, # 80% of the time windows are used for training
+'tf-idf':False,	# whether turn on the tf-idf
+'balance':False	# use balance mechanism during model building to solve imbalance problem
 }
 
+
 def processData(para):
-	print('sliding window for BGL SVM')
+	print('sliding window for BGL LogisticRegression')
 	filePath=para['path']+para['logfileName']
 	dataLL=[]
 	with open(filePath) as f:
@@ -38,17 +38,17 @@ def processData(para):
 	print('we have %d logs in this file'%logNum)
 
 	#=================divide into time windows=============#
-	twStartEndTuple=[]   #list of tuples, tuple contains two number, which represent the start and end of sliding time window, i.e. (1,5),(2,6),(3,7) 
+	twStartEndTuple=[]   #list of tuples, tuple contains two number, which represent the start and end of sliding time window, i.e. (1,5),(2,6),(3,7)
 	if not os.path.exists('../timeWindowCSV/slidingWindowIndex_'+str(para['timeInterval'])+'h_'+str(para['slidingWindow'])+'h.csv'):
-		 
+
 		startTime=time.mktime(datetime.datetime.strptime(dataLL[0][para['timeIndex']], "%Y-%m-%d-%H.%M.%S.%f").timetuple())
-		timeWindow=1		
+		timeWindow=1
 		t=startTime
 		firstStartEndLog=tuple()
 		startLog=0
 		endLog=0
 		for row in dataLL:
-			timeStamp=time.mktime(datetime.datetime.strptime(row[para['timeIndex']], "%Y-%m-%d-%H.%M.%S.%f").timetuple())	
+			timeStamp=time.mktime(datetime.datetime.strptime(row[para['timeIndex']], "%Y-%m-%d-%H.%M.%S.%f").timetuple())
 			if timeStamp>=t and timeStamp<t+para['timeInterval']*3600:
 				endLog+=1
 				endTime=timeStamp
@@ -133,7 +133,7 @@ def processData(para):
 		for j in range(numEvents):
 			cnt=0
 			for i in range(numLines):
-				if rawEventCount[i,j]!=0:     
+				if rawEventCount[i,j]!=0:
 					cnt+=1  #rawData[i,j]
 			if cnt == 0:
 				for i in range(numLines):
@@ -145,10 +145,6 @@ def processData(para):
 		return idfData, timeWindow, labels
 	print('rawData not idf data')
 	return rawEventCount,timeWindow,labels
-
-
-
-	
 
 def makePrediction(para,temLogNumPerTW,timeWindow,labelTWL):
 	traingSetSize=int(math.floor(timeWindow*para['trainingSetPercent']))
@@ -168,33 +164,24 @@ def makePrediction(para,temLogNumPerTW,timeWindow,labelTWL):
 		failDataArray=np.array(failData)
 
 		succNum = len(trainY)-failNum
-		print ('In training data, %d success tw, and %d failure time window'%(succNum, failNum))
-		diffNum =int(np.floor(float(succNum )/ failNum)) 
+		print('In training data, %d success tw, and %d failure time window'%(succNum, failNum))
+		diffNum =int(np.floor(float(succNum )/ failNum))
 		print diffNum
 		if diffNum > 1:
 			newGenArrayY=[1]*(failNum)
 			for i in range(diffNum-1):
 				trainX = np.vstack((trainX,failDataArray))
-				trainY = np.hstack((trainY,newGenArrayY))	
+				trainY = np.hstack((trainY,newGenArrayY))
 			print trainX.shape,trainY.shape
 
-	#0.4 0.0001 0.01 0.50 0.78 0.61
-	#1 0.0001 0.01 0.57037 0.78 0.66
-	#10 0.0001 0.01 0.66851 0.82313 0.7378
-	#100 0.0001 0.01 0.69 0.23 0.35
-	#10 0.001 0.01 0.48 0.86 0.62
-	# clf=svm.SVC(C=10, cache_size=2000, decision_function_shape='ovr', gamma=0.0001, kernel='rbf', class_weight='balanced' ,tol=0.01)   
-	clf=svm.LinearSVC(penalty='l1', tol=0.0001, C=1, dual=False, fit_intercept=True,
-	intercept_scaling=1, class_weight='balanced',  max_iter=1000)
+	clf=LogisticRegression(C=0.01, penalty='l1', tol=0.01,class_weight='balanced',multi_class='ovr')
 	clf=clf.fit(trainX,trainY)
 	testingX=temLogNumPerTW[traingSetSize:]
 	testingY=labelTWL[traingSetSize:]
-	# testingX = trainX
-	# testingY = trainY
 	prediction=list(clf.predict(testingX))
-	
+
 	if len(prediction)!=len(testingY):
-		print ('prediction and testingY have different length and SOMEWHERE WRONG!')
+		print('prediction and testingY have different length and SOMEWHERE WRONG!')
 	sameLabelNum=0
 	sameFailureNum=0
 	for i in range(len(testingY)):
@@ -204,7 +191,7 @@ def makePrediction(para,temLogNumPerTW,timeWindow,labelTWL):
 				sameFailureNum+=1
 
 	accuracy=float(sameLabelNum)/len(testingY)
-	print ('accuracy is %.5f:'%accuracy)
+	print('accuracy is %.5f:'%accuracy)
 
 	predictSuccess=0
 	predictFailure=0
@@ -222,9 +209,9 @@ def makePrediction(para,temLogNumPerTW,timeWindow,labelTWL):
 		elif tt==1:
 			testFailure+=1
 
-	print predictSuccess,predictFailure,testSuccess,testFailure,sameFailureNum
+	print(predictSuccess,predictFailure,testSuccess,testFailure,sameFailureNum)
 	if sameFailureNum==0:
-		print ('precision is 0 and recall is 0')
+		print('precision is 0 and recall is 0')
 	else:
 		precision=float(sameFailureNum)/(predictFailure)
 		print('precision is %.5f'%precision)
@@ -232,7 +219,7 @@ def makePrediction(para,temLogNumPerTW,timeWindow,labelTWL):
 		print('recall is %.5f'%recall)
 		F_measure=2*precision*recall/(precision+recall)
 		print('F_measure is %.5f'%F_measure)
-	print predictFailure,testFailure,sameFailureNum,precision,recall,F_measure
+	print(predictFailure,testFailure,sameFailureNum,precision,recall,F_measure)
 	return predictFailure,testFailure,sameFailureNum,precision,recall,F_measure
 
 def mainProcess(para):
@@ -240,19 +227,5 @@ def mainProcess(para):
 	predictFailure,testFailure,sameFailureNum,precision,recall,F_measure=makePrediction(para,rawEventCount,timeWindow,labels)
 	return predictFailure,testFailure,sameFailureNum,precision,recall,F_measure
 
-def diffTime(para):
-
-	#timeList=[1,3,6,9,12]
-	timeList=[0.0833333333, 0.5, 1.0, 3, 6]
-	tiLen=len(timeList)
-	result=np.zeros((tiLen,6))
-	i=0
-	for ti in timeList:
-		para['slidingWindow']=ti
-		result[i,:]=mainProcess(para)
-		i+=1
-	print result
-	np.savetxt('slidingWindow_SVM_BGL_keep6h_ChangeslidingWindow.csv',result,delimiter=',')
-
-diffTime(para)
-# mainProcess(para)
+if __name__ == '__main__':
+	mainProcess(para)

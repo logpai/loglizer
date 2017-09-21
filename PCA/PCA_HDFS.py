@@ -3,22 +3,22 @@
 
 from numpy import *
 import math
-'''for SOSP data using PCA'''
-#================PCA on SOSP data====================#
+'''for HDFS data using PCA'''
+#================PCA on HDFS data====================#
 #													 #
 #													 #
 #=====================================================
 para={
-'path':'../Data/SOSP_data/',
-'tfVectorName':'rm_repeat_rawTFVector.txt', 
+'path':'../Data/HDFS_data/',
+'tfVectorName':'rm_repeat_rawTFVector.txt',
 'tfLabelName':'rm_repeat_mlabel.txt',
 'fraction':0.95
 }
 numEvents=29
-def processData(para):	
+def processData(para):
 	numRows=575061
 	rawData=zeros((numRows,numEvents))
-	print('for SOSP data using PCA')
+	print('for HDFS data using PCA')
 	print('Loading data...')
 	filePath=para['path']+para['tfVectorName']
 	numLines=0
@@ -57,7 +57,7 @@ def getThreshold(sigma,numLines,U):
 		if (tmp/tot)>=para['fraction']:
 			break
 	k=i+1
-	print ('principal components=%d' % (k))
+	print('principal components=%d' % (k))
 
 	for i in range(numEvents):
 		sigma[i]=sigma[i]*sigma[i]/float(numLines)
@@ -86,22 +86,22 @@ def anomalyDetect(para,data,C,threshold,numLines):
 		line=line.split()
 		trueAnomaly[i]=int(line[0])
 		i+=1
-	print ('trueAnomaly=%d' % (sum(trueAnomaly)))
+	print('trueAnomaly=%d' % (sum(trueAnomaly)))
 
 	detectAnomaly=zeros((numLines),int)
-	print ('threshold=%f' % (threshold))
+	print('threshold=%f' % (threshold))
 	for i in range(numLines):
 		ya=dot(C,data[:,i])
 		SPE=dot(ya,ya)
 		if SPE>threshold:
 			detectAnomaly[i]=1	#1 represent failure
-	print ('detectAnomaly=%d' % (sum(detectAnomaly)) )
+	print('detectAnomaly=%d' % (sum(detectAnomaly)) )
 
 	tot=0
 	for i in range(numLines):
 		if trueAnomaly[i]&detectAnomaly[i]:
 			tot+=1
-	print ('really true=%d' % (tot))
+	print('really true=%d' % (tot))
 	precision = tot/float(sum(detectAnomaly))
 	recall = tot/float(sum(trueAnomaly))
 	print('the precision is %.5f'%(precision))
@@ -115,20 +115,8 @@ def mainProcess(para):
 	data,U,sigma=computeData(rawData,numLines)
 	threshold,C=getThreshold(sigma,numLines, U)
 	predictFailure,testFailure,sameFailureNum,precision,recall,F_measure = anomalyDetect(para,data,C,threshold,numLines)
-	print predictFailure,testFailure,sameFailureNum,precision,recall,F_measure  
+	print(predictFailure,testFailure,sameFailureNum,precision,recall,F_measure)
 	return predictFailure,testFailure,sameFailureNum,precision,recall,F_measure
 
-# mainProcess(para)
-def diffTime(para):
-	fractions=[1,1,1,1,1]
-	tiLen=len(fractions)
-	result=zeros((tiLen,6))
-	i=0
-	for ti in fractions:
-		result[i,:]=mainProcess(para)
-		i+=1
-	print result
-	savetxt('result_PCA_SOSP_5_times.csv',result,delimiter=',')
-
-diffTime(para)
-
+if __name__ == '__main__':
+	mainProcess(para)

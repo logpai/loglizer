@@ -4,26 +4,28 @@ __author__ = 'Shilin He'
 import time,datetime
 import numpy as np
 import csv
-from sklearn.linear_model import LogisticRegression   
+from sklearn import tree
+from sklearn.externals.six import StringIO
+from IPython.display import Image
 import pydot
 import math
 import os
 
 para={
-'path':'../Data/BGL_data/',
-'logfileName':'BGL_MERGED.log',
-'mapLogTemplate':'logTemplateMap.csv',
+'path':'../Data/BGL_data/', #data path
+'logfileName':'BGL_MERGED.log', #raw log data filename
+'mapLogTemplate':'logTemplateMap.csv', # log event mapping relation list, obtained from log parsing
 'selectColumn':[0,4], # select the corresponding columns in the raw data
 'timeIndex':1,  # the index of time in the selected columns, start from 0
 'timeInterval':6,  #the size of time window with unit of hour
 'slidingWindow':1,  #the size of sliding window interval with unit of hour
-'trainingSetPercent': 0.8, #which means how many(percentage) time windows would be regarded as training set
-'tf-idf':False,
-'balance':False
+'trainingSetPercent': 0.8, # 80% of the time windows are used for training
+'tf-idf':False,	# whether turn on the tf-idf
+'balance':False	# use balance mechanism during model building to solve imbalance problem
 }
 
 def processData(para):
-	print('sliding window for BGL LogisticRegression')
+	print('sliding window for BGL decision Tree')
 	filePath=para['path']+para['logfileName']
 	dataLL=[]
 	with open(filePath) as f:
@@ -37,17 +39,18 @@ def processData(para):
 	print('we have %d logs in this file'%logNum)
 
 	#=================divide into time windows=============#
-	twStartEndTuple=[]   #list of tuples, tuple contains two number, which represent the start and end of sliding time window, i.e. (1,5),(2,6),(3,7) 
-	if not os.path.exists('../timeWindowCSV/slidingWindowIndex_'+str(para['timeInterval'])+'h_'+str(para['slidingWindow'])+'h.csv'):
-		 
+	csvFilePath = '../timeWindowCSV/slidingWindowIndex_'+str(para['timeInterval'])+'h_'+str(para['slidingWindow'])+'h.csv'
+	twStartEndTuple=[]   #list of tuples, tuple contains two number, which represent the start and end of sliding time window, i.e. (1,5),(2,6),(3,7)
+	if not os.path.exists(csvFilePath):
+
 		startTime=time.mktime(datetime.datetime.strptime(dataLL[0][para['timeIndex']], "%Y-%m-%d-%H.%M.%S.%f").timetuple())
-		timeWindow=1		
+		timeWindow=1
 		t=startTime
 		firstStartEndLog=tuple()
 		startLog=0
 		endLog=0
 		for row in dataLL:
-			timeStamp=time.mktime(datetime.datetime.strptime(row[para['timeIndex']], "%Y-%m-%d-%H.%M.%S.%f").timetuple())	
+			timeStamp=time.mktime(datetime.datetime.strptime(row[para['timeIndex']], "%Y-%m-%d-%H.%M.%S.%f").timetuple())
 			if timeStamp>=t and timeStamp<t+para['timeInterval']*3600:
 				endLog+=1
 				endTime=timeStamp
@@ -80,10 +83,10 @@ def processData(para):
 		timeWindow=len(twStartEndTuple)
 		print('there are %d time windows in this dataset!\n'%timeWindow)
 		print('%d instances in this dataset'%len(twStartEndTuple))
-		np.savetxt('../timeWindowCSV/slidingWindowIndex_'+str(para['timeInterval'])+'h_'+str(para['slidingWindow'])+'h.csv',twStartEndTuple,delimiter=',',fmt='%d')
+		np.savetxt(csvFilePath,twStartEndTuple,delimiter=',',fmt='%d')
 	else:
 		print('Loading time window')
-		with open('../timeWindowCSV/slidingWindowIndex_'+str(para['timeInterval'])+'h_'+str(para['slidingWindow'])+'h.csv') as timeWidowfi:
+		with open(csvFilePath) as timeWidowfi:
 			twreader = csv.reader(timeWidowfi)
 			for logrow in twreader:
 				row=[int(logrow[0]),int(logrow[1])]
@@ -132,7 +135,7 @@ def processData(para):
 		for j in range(numEvents):
 			cnt=0
 			for i in range(numLines):
-				if rawEventCount[i,j]!=0:     
+				if rawEventCount[i,j]!=0:
 					cnt+=1  #rawData[i,j]
 			if cnt == 0:
 				for i in range(numLines):
@@ -163,23 +166,18 @@ def makePrediction(para,temLogNumPerTW,timeWindow,labelTWL):
 		failDataArray=np.array(failData)
 
 		succNum = len(trainY)-failNum
-		print ('In training data, %d success tw, and %d failure time window'%(succNum, failNum))
-		diffNum =int(np.floor(float(succNum )/ failNum)) 
+		print('In training data, %d success tw, and %d failure time window'%(succNum, failNum))
+		diffNum =int(np.floor(float(succNum )/ failNum))
 		print diffNum
 		if diffNum > 1:
 			newGenArrayY=[1]*(failNum)
 			for i in range(diffNum-1):
 				trainX = np.vstack((trainX,failDataArray))
-				trainY = np.hstack((trainY,newGenArrayY))	
+				trainY = np.hstack((trainY,newGenArrayY))
 			print trainX.shape,trainY.shape
 
-#10 0.001 0.96  0.52
-#10 0.01 0.97 0.35
-#1 0.01 0.969 0.63
-# 0.1 0.01 0.93 0.67
-#100 0.01 0.90 0.27
-#0.01 0.01 1 0.7
-	clf=LogisticRegression(C=0.01, penalty='l1', tol=0.01,class_weight='balanced',multi_class='ovr')
+
+	clf=tree.DecisionTreeClassifier()
 	clf=clf.fit(trainX,trainY)
 
 	testingX=temLogNumPerTW[traingSetSize:]
@@ -187,9 +185,9 @@ def makePrediction(para,temLogNumPerTW,timeWindow,labelTWL):
 	# testingX = trainX
 	# testingY = trainY
 	prediction=list(clf.predict(testingX))
-	
+
 	if len(prediction)!=len(testingY):
-		print ('prediction and testingY have different length and SOMEWHERE WRONG!')
+		print('prediction and testingY have different length and SOMEWHERE WRONG!')
 	sameLabelNum=0
 	sameFailureNum=0
 	for i in range(len(testingY)):
@@ -199,7 +197,7 @@ def makePrediction(para,temLogNumPerTW,timeWindow,labelTWL):
 				sameFailureNum+=1
 
 	accuracy=float(sameLabelNum)/len(testingY)
-	print ('accuracy is %.5f:'%accuracy)
+	print('accuracy is %.5f:'%accuracy)
 
 	predictSuccess=0
 	predictFailure=0
@@ -219,7 +217,7 @@ def makePrediction(para,temLogNumPerTW,timeWindow,labelTWL):
 
 	print predictSuccess,predictFailure,testSuccess,testFailure,sameFailureNum
 	if sameFailureNum==0:
-		print ('precision is 0 and recall is 0')
+		print('precision is 0 and recall is 0')
 	else:
 		precision=float(sameFailureNum)/(predictFailure)
 		print('precision is %.5f'%precision)
@@ -232,22 +230,10 @@ def makePrediction(para,temLogNumPerTW,timeWindow,labelTWL):
 
 def mainProcess(para):
 	rawEventCount,timeWindow,labels = processData(para)
+	t1 = time.time()
 	predictFailure,testFailure,sameFailureNum,precision,recall,F_measure=makePrediction(para,rawEventCount,timeWindow,labels)
-	return predictFailure,testFailure,sameFailureNum,precision,recall,F_measure
+	t = time.time() - t1
+	return predictFailure,testFailure,sameFailureNum,precision,recall,F_measure,t
 
-# def diffTime(para):
-
-# 	#timeList=[1,3,6,9,12]
-# 	timeList=[0.0833333333, 0.5, 1.0, 3, 6]
-# 	tiLen=len(timeList)
-# 	result=np.zeros((tiLen,6))
-# 	i=0
-# 	for ti in timeList:
-# 		para['slidingWindow']=ti
-# 		result[i,:]=mainProcess(para)
-# 		i+=1
-# 	print result
-# 	np.savetxt('slidingWindow_LR_BGL_keep6h_ChangeslidingSize.csv',result,delimiter=',')
-
-# diffTime(para)
-mainProcess(para)
+if __name__ == '__main__':
+	mainProcess(para)

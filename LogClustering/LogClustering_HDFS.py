@@ -11,28 +11,28 @@ from scipy.spatial.distance import pdist
 import time
 import os
 import csv
-'''for SOSP data using Log Clustering'''
-#============Log Clustering on SOSP data=============#
+'''for HDFS data using Log Clustering'''
+#============Log Clustering on HDFS data=============#
 #													 #
 #													 #
 #=====================================================
+
 para={
-'path':'../Data/data_differentSize/SOSP_diffSize/',
-'tfVectorName': 'SOSP_60m_Vectors.txt',#, 'testData.txt' 
-'tfLabelName':  'SOSP_60m_labels.txt',#'testLabel.txt' ,
+'path':'../Data/data_differentSize/HDFS_diffSize/',
+'tfVectorName': 'HDFS_60m_Vectors.txt',#, 'testData.txt'
+'tfLabelName':  'HDFS_60m_labels.txt',#'testLabel.txt' ,
 'trainDataPercent':0.8,
 'max_d': 0.9,  # the threshold for cutoff the cluster process
 'repre_threshold':0.2,
-'fail_threshold': 0.1,   
+'fail_threshold': 0.1,
 'succ_threshold':0.99,
 'initialTrainPercent': 0.8#percentage of training data that be used as initial training
 }
 
-def processData(para):	
+def processData(para):
 	initnumEvents=29
 	numRows=575061
 	rawData=np.zeros((numRows,initnumEvents))
-	print('for SOSP data using PCA')
 	print('Loading data...')
 	filePath=para['path']+para['tfVectorName']
 	labelFilePath = para['path'] + para['tfLabelName']
@@ -44,7 +44,6 @@ def processData(para):
 				rawData[numLines,j]=int(line[j])
 			numLines += 1
 	rawData = rawData[:numLines,:]
-	print rawData.shape
 	print('total line number is %d'%(numLines))
 	filterCol = []
 	for i in range(initnumEvents):
@@ -52,7 +51,6 @@ def processData(para):
 			filterCol.append(i)
 	filterRawData=rawData[:,filterCol]
 	numEvents = len(filterCol)
-
 	labelcount=0
 	labels = np.zeros((numLines,1))
 	with open(labelFilePath) as labelF:
@@ -63,7 +61,7 @@ def processData(para):
 	return filterRawData,labels,numLines,numEvents
 
 def computeWeight(rawData,numEvents):
-	# to avoid the case that a term never occurs in a document, we add 1 to the cnt 
+	# to avoid the case that a term never occurs in a document, we add 1 to the cnt
 	numLines,numEvents=rawData.shape
 	weightedData=np.zeros((numLines,numEvents),float)
 	for j in range(numEvents):
@@ -75,27 +73,22 @@ def computeWeight(rawData,numEvents):
 	return weightedData
 
 def seperateData(para,weightedData,totalNumLines,labels):
-	'''data can be divided into three part, initial training data(from start to initialTrainSize), total learning 
-	   data(from initialTrainSize to trainSize), and testing data(from trainSize to end) three part are seperated by two number 
+	'''data can be divided into three part, initial training data(from start to initialTrainSize), total learning
+	   data(from initialTrainSize to trainSize), and testing data(from trainSize to end) three part are seperated by two number
 	   initialTrainSize and trainSize'''
 
 	print('seperating the initial training Data...')
 	trainSize = int(math.floor(totalNumLines*para['trainDataPercent']))
 	initialTrainSize = int(math.floor(trainSize*para['initialTrainPercent']))
-
 	initTrainData = weightedData[:initialTrainSize,:]
-	
 	totalLearnData = weightedData[:trainSize,:]
 	testingData = weightedData[trainSize:,:]
 	print ('initial training data size is',initTrainData.shape)
 	print ('total learning datasize is',totalLearnData.shape)
 	print ('testing datasize is',testingData.shape)
-
 	initTrainLabel = labels[:initialTrainSize]
 	totalLearnLabels = list(labels[:trainSize])
 	testingLabels = list(labels[trainSize:])
-	print len(initTrainLabel),len(totalLearnLabels),len(testingLabels)
-	
 	failSeqList = []
 	succSeqList = []
 	for i in range(len(initTrainLabel)):
@@ -103,31 +96,16 @@ def seperateData(para,weightedData,totalNumLines,labels):
 			succSeqList.append(i)
 		else:
 			failSeqList.append(i)
-
 	return succSeqList,failSeqList,initTrainData,totalLearnData,totalLearnLabels,testingData,testingLabels,initialTrainSize,trainSize
 
 def clustering(partSeqList, partData):
 	print('clustering for the seperated dataset')
 	#simiMatrix = simiMatrixCal(partData)
 	'''Invoke the clustering method in library'''
-	#print simiMatrix.shape
-
 	data_dist = pdist(partData,metric=distCalculate)
-
 	Z = linkage(data_dist, 'complete')
 	clusterLabels = fcluster(Z, para['max_d'], criterion='distance')
 	print ('there are altogether %d clusters in this initial clustering'%(len(np.unique(clusterLabels))))
-	# print Z[:20]
-	# plt.figure(figsize=(25, 10))
-	# plt.title('Hierarchical Clustering Dendrogram')
-	# plt.xlabel('sample index')
-	# plt.ylabel('distance')
-	# dendrogram(Z,                                                               
-	#     leaf_rotation=90.,  # rotates the x axis labels
-	#     leaf_font_size=8.,  # font size for the x axis labels
-	#     )
-	# plt.show()
-	
 	clusNum = len(set(clusterLabels))
 	instIndexPerClus=[[] for i in range(clusNum)]  #initialization
 	for i in range(len(clusterLabels)):
@@ -147,33 +125,27 @@ def findInitRepre(initTrainData,instIndexPerClus,scoreList):
 		minIndex = -1
 		for cl in range(eachClusLen):
 			index = eachClusterIndex[cl]   #which row in the rawdata
-			score = np.sum(distMatrix[cl]) - distMatrix[cl,cl] 
+			score = np.sum(distMatrix[cl]) - distMatrix[cl,cl]
 			scoreList[index] = score
-			#print score, index
 			if score < minScore:
 				minIndex = index
 				minScore = score
 		represents.append(initTrainData[minIndex])
-		#print ('min Index is %d and min value is %f'%(minIndex,minScore))
 	return represents
 
 def anomalyDetect(para, failSeqList,succSeqList,initTrainData,totalLearnData,totalLearnLabels,testingData,testingLabels,initialTrainSize,trainSize,totalNumLines):
 	failData = initTrainData[failSeqList,:]
 	succData = initTrainData[succSeqList,:]
-	print failData.shape,succData.shape
 	if failData.shape[0] + succData.shape[0] != len(initTrainData):
 		print('failure occurs while splitting success data and failure data in traing data')
 	failClusters, failIndexPerClus = clustering(failSeqList, failData)
 	print('failure data clustering finished...')
 	succClusters, succIndexPerClus = clustering(succSeqList, succData)
 	print('success data clustering finished...')
-
 	scoreList=np.zeros(totalNumLines)  # A one dimension list of all zero with size of totalLineNum
 	failRepres = findInitRepre(initTrainData, failIndexPerClus,scoreList)
 	succRepres = findInitRepre(initTrainData, succIndexPerClus,scoreList)
-	
 	onlineLearn(para, totalLearnData,totalLearnLabels,scoreList,failRepres,succRepres,failIndexPerClus,succIndexPerClus,initialTrainSize)
-	print len(failRepres), len(succRepres)
 	predictLabel = checkCluster(failRepres,succRepres,testingData)
 	return testing(predictLabel,testingLabels)
 
@@ -181,17 +153,17 @@ def anomalyDetect(para, failSeqList,succSeqList,initTrainData,totalLearnData,tot
 def onlineLearn(para,totalLearnData,totalLearnLabels,scoreList,failRepresents,succRepresents,failIndexPerClus,succIndexPerClus,initialTrainSize):
 	totalTrainSize = totalLearnData.shape[0]
 	threshold = para['repre_threshold']
-	for i in range(initialTrainSize, totalTrainSize):  
+	for i in range(initialTrainSize, totalTrainSize):
 		newInst = totalLearnData[i]
 		if totalLearnLabels[i] == 1:   #failure data cluster
-			minValue,minIndex = calDis(newInst, failRepresents)   #represent is the represent vector of each cluster 
+			minValue,minIndex = calDis(newInst, failRepresents)   #represent is the represent vector of each cluster
 			if minValue <= threshold:
 				clusLabelIndex = minIndex   #index of cluster label, means that if it is 0 then cluster should be the first cluster one
 				print('instance %d(failure) ------> clustered into failure label %d'%(i,clusLabelIndex+1))
 				updateRepre(i, newInst, failIndexPerClus,totalLearnData,failRepresents, scoreList, clusLabelIndex)
 			else:
 				print('instance %d(failure) ------> should create new failure cluster%d'%(i,len(failRepresents)+1))
-				failIndexPerClus.append([i])  	#scoreList[logIndex] still should be zero and do not need to be updated as 
+				failIndexPerClus.append([i])  	#scoreList[logIndex] still should be zero and do not need to be updated as
 				failRepresents.append(newInst)  #currently there is no other logs in this cluster
 		else:
 			minValue,minIndex  = calDis(newInst, succRepresents)
@@ -200,14 +172,12 @@ def onlineLearn(para,totalLearnData,totalLearnLabels,scoreList,failRepresents,su
 				print('instance %d(success) ------> clustered into success label %d'%(i,clusLabelIndex+1))
 				updateRepre(i, newInst, succIndexPerClus, totalLearnData,succRepresents,scoreList, clusLabelIndex)
 			else:
-				print('instance %d(success) ------> should create new success cluster %d'%(i,len(succRepresents)+1)) 
+				print('instance %d(success) ------> should create new success cluster %d'%(i,len(succRepresents)+1))
 				succIndexPerClus.append([i])
-				succRepresents.append(newInst) 
-	# print 'finally, the resulted failure clusters is',failIndexPerClus
-	# print 'finally, the resulted success clusters is', succIndexPerClus
+				succRepresents.append(newInst)
 
 def updateRepre(logIndex, newInst, indexPerClus, totalLearnData,represent, scoreList, clusLabelIndex):
-	#update score of existing logs in current cluster 
+	#update score of existing logs in current cluster
 	i=0
 	updateDis=[]
 	logIndexInCLuster = indexPerClus[clusLabelIndex]
@@ -215,29 +185,25 @@ def updateRepre(logIndex, newInst, indexPerClus, totalLearnData,represent, score
 		newDis = distCalculate(newInst, totalLearnData[ind])
 		scoreList[ind] += newDis
 		updateDis.append(newDis)
-		
 	# add current log index into the current cluster
 	indexPerClus[clusLabelIndex].append(logIndex)
-
 	# update newInstance data itself
 	if scoreList[logIndex] ==0 :
 		scoreList[logIndex] += sum(updateDis)
 	else:
 		print('ERROR!!!!+========++++++++++++++++++++++====++++++++++++')
-
 	#if this row is the same as the representive vector,then there is no need to find the new representive as they must be the same
 	# #choose the minimum value as the representive vector
-	if not np.allclose(newInst,represent[clusLabelIndex]):  
+	if not np.allclose(newInst,represent[clusLabelIndex]):
 		partScoreList=scoreList[logIndexInCLuster]
 		minIndex = logIndexInCLuster[np.argmin(partScoreList)]
 		represent[clusLabelIndex] = totalLearnData[minIndex]
-		
 
 def calDis(newInst, represents):
 	minIndex = -1
 	minValue = float('inf')
 	for i,re in enumerate(represents):
-		if np.allclose(newInst,re): 
+		if np.allclose(newInst,re):
 			minIndex = i
 			minValue = 0
 			break
@@ -252,7 +218,7 @@ def distMatrixCal(partData):
 	distMatrix=-1*np.ones((numRows,numRows))
 	for i in range(numRows):
 		for j in range(i,numRows):
-			distMatrix[i,j] = distMatrix[j,i] = distCalculate(partData[i,:],partData[j,:])	
+			distMatrix[i,j] = distMatrix[j,i] = distCalculate(partData[i,:],partData[j,:])
 	return distMatrix
 
 def distCalculate(Sei,Sej):
@@ -266,7 +232,7 @@ def distCalculate(Sei,Sej):
 	return result
 
 def testing(predictLabel,realLabels):
-	print len(realLabels),len(predictLabel)
+	print(len(realLabels),len(predictLabel))
 	sameFailureNum=0
 	for i in range(len(predictLabel)):
 		if(realLabels[i]==1):
@@ -289,7 +255,6 @@ def testing(predictLabel,realLabels):
 		elif tt==1:
 			testFailure+=1
 
-	print predictSuccess,predictFailure,testSuccess,testFailure,sameFailureNum
 	if sameFailureNum==0:
 		print ('precision is 0 and recall is 0')
 		predictFailure=testFailure=0
@@ -307,28 +272,22 @@ def testing(predictLabel,realLabels):
 
 def checkCluster(failRepres,succRepres,testingData):
 	predictLabel=[-1]*testingData.shape[0]
-	# clusterLabel=[0]*testingData.shape[0]
 	clusterNum=len(failRepres)
 	for r, row in enumerate(testingData):
 		newDisList = []
 		for failRep in failRepres:
-			newDisList.append(distCalculate(failRep,row))  
-		#print('failure distance',newDisList)
-		#print newDisList
+			newDisList.append(distCalculate(failRep,row))
 		if min(newDisList) < para['fail_threshold']:
-			predictLabel[r] = 1 
-		else: 
+			predictLabel[r] = 1
+		else:
 			succDist=[]
 			for succRep in succRepres:
-				succDist.append(distCalculate(succRep,row))  
-			#print ('success distance',succDist)
+				succDist.append(distCalculate(succRep,row))
 			if min(succDist) < para['succ_threshold']:
-				predictLabel[r] = 0#(np.argmax(succDist)+1)
+				predictLabel[r] = 0
 			else:
 				predictLabel[r] = 1
-	#print predictLabel
 	return predictLabel
-
 
 def mainProcess(para):
 	t1 = time.time()
@@ -336,52 +295,9 @@ def mainProcess(para):
 	weightedData = computeWeight(rawData,numEvents)
 	succSeqList,failSeqList,initTrainData,totalLearnData,totalLearnLabels,testingData,testingLabels,initialTrainSize,trainSize = seperateData(para,weightedData,totalNumLines,labels)
 	predictFailure,testFailure,sameFailureNum,precision,recall,F_measure= anomalyDetect(para, failSeqList,succSeqList,initTrainData,totalLearnData,totalLearnLabels,testingData,testingLabels,initialTrainSize,trainSize,totalNumLines)
-	print predictFailure,testFailure,sameFailureNum,precision,recall,F_measure
+	print(predictFailure,testFailure,sameFailureNum,precision,recall,F_measure)
 	print(time.time() - t1)
 	return predictFailure,testFailure,sameFailureNum,precision,recall,F_measure
 
-# if __name__ == '__main__':
-# 	mainProcess(para)
-
-def chooseParameters(para):
-	maxd=[0.9]    #0.8 0.9 highest precision and recall(always the same in this dataset 0.012)
-	repre_threshold=[ 0.2]
-	fail_threshold=[0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]
-	succ_threshold=[0.7,0.8,0.9]  # 0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0
-	#0.9 0.2 0.01 0.99 1.0 0.75 0.8571
-	cc=0
-	result=np.zeros((500,10))  #10000
-	for i in range(len(maxd)):
-		para['max_d']=maxd[i]
-		for j in range(len(repre_threshold)):
-			para['repre_threshold']=repre_threshold[j]	
-			for k in range(len(fail_threshold)):
-				para['fail_threshold'] = fail_threshold[k]	
-				for t in range(len(succ_threshold)):
-					result[cc,0] =maxd[i]
-					result[cc,1] =repre_threshold[j]
-					result[cc,2] =fail_threshold[k]
-					para['succ_threshold'] = succ_threshold[t]
-					print maxd[i]
-					print repre_threshold[j]
-					print fail_threshold[k]
-					print succ_threshold[t]
-					result[cc,3] =succ_threshold[t]
-					result[cc,4:10] = mainProcess(para)
-					cc+=1
-	print result
-	np.savetxt('NewSOSPresults.csv',result,delimiter=',')
-chooseParameters(para)
-
-# def diffTimes(para):
-# 	times = [1,1,1,1,1]
-# 	tiLen=len(times)
-# 	result=np.zeros((tiLen,6))
-# 	i=0
-# 	for ti in times:
-# 		result[i,:]=mainProcess(para)
-# 		i+=1
-# 	print result
-# 	np.savetxt('result_logCustering_SOSP_5_times.csv',result,delimiter=',')
-
-# diffTimes(para)
+if __name__ == '__main__':
+	mainProcess(para)

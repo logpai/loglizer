@@ -4,24 +4,24 @@ __author__ = 'Shilin He'
 import time,datetime
 import numpy as np
 import csv
-from sklearn.linear_model import LogisticRegression   
+from sklearn.linear_model import LogisticRegression
 import pydot
 import math
-'''for SOSP data using Logistic Regression'''
-#============decision Tree on SOSP data==============#
+'''for HDFS data using Logistic Regression'''
+#============decision Tree on HDFS data==============#
 #													 #
 #													 #
 #=====================================================
 
 para={
-'path':'../Data/SOSP_data/',
-'matrixFile':'rm_repeat_rawTFVector.txt',   
-'labelFile':'rm_repeat_mlabel.txt',             
+'path':'../Data/HDFS_data/',
+'matrixFile':'rm_repeat_rawTFVector.txt',
+'labelFile':'rm_repeat_mlabel.txt',
 'trainingSetPercent': 0.8, #which means how many(percentage) time windows would be regarded as training set
 }
 
 def processData(para):
-	print('Loading data for SOSP using LogisticRegression...')
+	print('Loading data for HDFS using LogisticRegression...')
 	numEvents=29
 	totalNumRows=575061
 	filePath=para['path']+para['matrixFile']
@@ -35,7 +35,7 @@ def processData(para):
 	for laline in labellines:
 		lab=int(laline.split()[0])
 		labels[i]=lab
-		if lab==0:  
+		if lab==0:
 			sucRowCount+=1
 		i+=1
 	print('success label count is %d'%sucRowCount)
@@ -57,14 +57,10 @@ def makePrediction(para,rawData,totalNumRows,labels):
 	print('%d instances are selected as training dataset!'%traingSetSize)
 	trainX=np.array(rawData[0:traingSetSize])
 	trainY=np.array(labels[0:traingSetSize]).ravel()
-
 	clf=LogisticRegression(C=100, penalty='l1', tol=0.01,class_weight='balanced',multi_class='ovr')
 	clf=clf.fit(trainX,trainY)
-	
 	testingX=rawData[traingSetSize:]
 	testingY=labels[traingSetSize:]
-	# testingX = trainX
-	# testingY = trainY
 	prediction=list(clf.predict(testingX))
 	if len(prediction)!=len(testingY):
 		print ('prediction and testingY have different length and SOMEWHERE WRONG!')
@@ -95,7 +91,7 @@ def makePrediction(para,rawData,totalNumRows,labels):
 		elif tt==1:
 			testFailure+=1
 
-	print predictSuccess,predictFailure,testSuccess,testFailure,sameFailureNum
+	print (predictSuccess,predictFailure,testSuccess,testFailure,sameFailureNum)
 	if sameFailureNum==0:
 		print ('precision is 0 and recall is 0')
 	else:
@@ -105,24 +101,13 @@ def makePrediction(para,rawData,totalNumRows,labels):
 		print('recall is %.5f'%recall)
 		F_measure=2*precision*recall/(precision+recall)
 		print('F_measure is %.5f'%F_measure)
-	#print predictFailure,testFailure,sameFailureNum,precision,recall,F_measure
+	print(predictFailure,testFailure,sameFailureNum,precision,recall,F_measure)
 	return predictFailure,testFailure,sameFailureNum,precision,recall,F_measure
 
 def mainProcess(para):
 	rawData,totalNumRows,labels = processData(para)
 	predictFailure,testFailure,sameFailureNum,precision,recall,F_measure = makePrediction(para,rawData,totalNumRows,labels)
-	print predictFailure,testFailure,sameFailureNum,precision,recall,F_measure
 	return predictFailure,testFailure,sameFailureNum,precision,recall,F_measure
 
-def diffTime(para):
-	timeList=[1,1,1,1,1,1]
-	tiLen=len(timeList)
-	result=np.zeros((tiLen,6))
-	i=0
-	for ti in timeList:
-		result[i,:]=mainProcess(para)
-		i+=1
-	print result
-	np.savetxt('result_LogisticRegress_SOSP_6times.csv',result,delimiter=',')	
-#mainProcess(para)
-diffTime(para)
+if __name__ == '__main__':
+	mainProcess(para)
