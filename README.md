@@ -27,9 +27,9 @@ The framework of our anomaly detection toolbox are given as following:
 
 The framework is illustrated as follows:
 
-![Framework of Anomaly Detection](FrameWork.png)
+![Framework of Anomaly Detection](/README/FrameWork.png)
 
-In our toolbox, we mainly focus on Feature Extraction and Anomaly Detection, while Log Collection and Log Parsing are out of the scope of this project. To be more specific, the input is the parsed log events, and the output is whether it is anomaly for each log sequence. 
+In our toolbox, we mainly focus on Feature Extraction and Anomaly Detection, while Log Collection and Log Parsing are out of the scope of this project. To be more specific, the input is the parsed log events, and the output is whether it is anomaly for each log sequence.
 
 ## Anomaly detection methods
 * ***Supervised Anomaly Detection:***  
@@ -46,4 +46,3 @@ In our toolbox, we mainly focus on Feature Extraction and Anomaly Detection, whi
   paper: [Large-Scale System Problems Detection by Mining Console Logs](https://www.usenix.org/legacy/event/sysml08/tech/full_papers/xu/xu.pdf)  
   **3. Invariants Mining:**  
   paper: [Mining Invariants from Console Logs for System Problem Detection](http://research.microsoft.com/pubs/121673/Mining%20Invariants%20from%20Console%20Logs.pdf)  
-  
