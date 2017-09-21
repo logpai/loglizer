@@ -34,7 +34,7 @@ In our toolbox, we mainly focus on Feature Extraction and Anomaly Detection, whi
 ## Anomaly detection methods
 * ***Supervised Anomaly Detection:***  
   **1. Logistic Regression:**  
-  Paper: [Fingerprinting the Datacenter: Automated Classification of Performance Crises](http://dl.acm.org/citation.cfm?id=1755926)
+  Paper: [Fingerprinting the Datacenter: Automated Classification of Performance Crises](http://dl.acm.org/citation.cfm?id=1755926)  
   Affiliations: UC Berkeley, Cornell, Microsoft  
   **2. Decision Tree:**  
   Paper: [Failure Diagnosis Using Decision Trees](http://www.cs.berkeley.edu/~brewer/papers/icac2004_chen_diagnosis.pdf)  
@@ -48,7 +48,7 @@ In our toolbox, we mainly focus on Feature Extraction and Anomaly Detection, whi
   Affiliations: Microsoft Research   
   **2. PCA:**  
   Paper: [Large-Scale System Problems Detection by Mining Console Logs](https://www.usenix.org/legacy/event/sysml08/tech/full_papers/xu/xu.pdf)  
-  Affiliations: UC Berkeley
+  Affiliations: UC Berkeley  
   **3. Invariants Mining:**  
   Paper: [Mining Invariants from Console Logs for System Problem Detection](http://research.microsoft.com/pubs/121673/Mining%20Invariants%20from%20Console%20Logs.pdf)  
   Affiliations: Microsoft Research  
