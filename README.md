@@ -3,7 +3,7 @@
 
 Loglizer is an open-source python tool for automatic anomaly detection via log analysis. In this project, six popular anomaly detection methods are implemented and compared on two public datasets, and detailed information (e.g., experimental results, findings) can be found in our [paper](http://ieeexplore.ieee.org/document/7774521/).
 
-Notes: Recently, many researchers and developers emailed us for the datasets, but unfortunately some datasets cannot be distributed as we do not have the copyright. The good news is that we ([logpai](https://github.com/logpai)) are trying to public some log datasets ([loghub](https://github.com/logpai/loghub)). Please follow us for the latest progress.
+Notes: Recently, many researchers and developers emailed us for the datasets, but unfortunately some datasets cannot be distributed due to the copyright restriction. The good news is that we ([logpai](https://github.com/logpai)) are trying to public some log datasets ([loghub](https://github.com/logpai/loghub)). Please follow us or star the project for the latest progress.
 
 ## Paper
 Our paper is published on the 27th International Symposium on Software Reliability Engineering (**ISSRE 2016**), Ottawa, Canada. The information can be found here:  
@@ -34,7 +34,7 @@ In our toolbox, we mainly focus on Feature Extraction and Anomaly Detection, whi
 ## Anomaly detection methods
 * ***Supervised Anomaly Detection:***  
   **1. Logistic Regression:**  
-  Paper: [Fingerprinting the Datacenter: Automated Classification of Performance Crises](http://dl.acm.org/citation.cfm?id=1755926)
+  Paper: [Fingerprinting the Datacenter: Automated Classification of Performance Crises](http://dl.acm.org/citation.cfm?id=1755926)  
   Affiliations: UC Berkeley, Cornell, Microsoft  
   **2. Decision Tree:**  
   Paper: [Failure Diagnosis Using Decision Trees](http://www.cs.berkeley.edu/~brewer/papers/icac2004_chen_diagnosis.pdf)  
@@ -48,7 +48,7 @@ In our toolbox, we mainly focus on Feature Extraction and Anomaly Detection, whi
   Affiliations: Microsoft Research   
   **2. PCA:**  
   Paper: [Large-Scale System Problems Detection by Mining Console Logs](https://www.usenix.org/legacy/event/sysml08/tech/full_papers/xu/xu.pdf)  
-  Affiliations: UC Berkeley
+  Affiliations: UC Berkeley  
   **3. Invariants Mining:**  
   Paper: [Mining Invariants from Console Logs for System Problem Detection](http://research.microsoft.com/pubs/121673/Mining%20Invariants%20from%20Console%20Logs.pdf)  
   Affiliations: Microsoft Research  
