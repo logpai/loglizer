@@ -3,7 +3,7 @@
 
 Loglizer is an open-source python tool for automatic anomaly detection via log analysis. In this project, six popular anomaly detection methods are implemented and compared on two public datasets, and detailed information (e.g., experimental results, findings) can be found in our [paper](http://ieeexplore.ieee.org/document/7774521/).
 
-Notes: Recently, many researchers and developers emailed us for the datasets, but unfortunately some datasets cannot be distributed as we do not have the copyright. The good news is that we ([logpai](https://github.com/logpai)) are trying to public some log datasets ([loghub](https://github.com/logpai/loghub)). Please follow us for the latest progress.
+Notes: Recently, many researchers and developers emailed us for the datasets, but unfortunately some datasets cannot be distributed due to the copyright restriction. The good news is that we ([logpai](https://github.com/logpai)) are trying to public some log datasets ([loghub](https://github.com/logpai/loghub)). Please follow us or star the project for the latest progress.
 
 ## Paper
 Our paper is published on the 27th International Symposium on Software Reliability Engineering (**ISSRE 2016**), Ottawa, Canada. The information can be found here:  
