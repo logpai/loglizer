@@ -34,15 +34,21 @@ In our toolbox, we mainly focus on Feature Extraction and Anomaly Detection, whi
 ## Anomaly detection methods
 * ***Supervised Anomaly Detection:***  
   **1. Logistic Regression:**  
-  paper: [Fingerprinting the Datacenter:Automated Classification of Performance Crises](http://dl.acm.org/citation.cfm?id=1755926)  
+  Paper: [Fingerprinting the Datacenter: Automated Classification of Performance Crises](http://dl.acm.org/citation.cfm?id=1755926)
+  Affiliations: UC Berkeley, Cornell, Microsoft  
   **2. Decision Tree:**  
-  paper: [Failure Diagnosis Using Decision Trees](http://www.cs.berkeley.edu/~brewer/papers/icac2004_chen_diagnosis.pdf)  
+  Paper: [Failure Diagnosis Using Decision Trees](http://www.cs.berkeley.edu/~brewer/papers/icac2004_chen_diagnosis.pdf)  
+  Affiliations: UC Berkeley, eBay   
   **3. SVM:**  
-  paper: [Failure Prediction in IBM BlueGeneL Event Logs](http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=4536397)  
+  Paper: [Failure Prediction in IBM BlueGeneL Event Logs](http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=4536397)  
+  Affiliations: Rutgers University, IBM     
 * ***Unsupervised Anomaly Detection:***  
   **1. Log Clustering:**  
-  paper: [Log Clustering based Problem Identification for Online Service Systems](http://www.msr-waypoint.net/apps/pubs/default.aspx?id=260324)  
+  Paper: [Log Clustering based Problem Identification for Online Service Systems](http://www.msr-waypoint.net/apps/pubs/default.aspx?id=260324)  
+  Affiliations: Microsoft Research   
   **2. PCA:**  
-  paper: [Large-Scale System Problems Detection by Mining Console Logs](https://www.usenix.org/legacy/event/sysml08/tech/full_papers/xu/xu.pdf)  
+  Paper: [Large-Scale System Problems Detection by Mining Console Logs](https://www.usenix.org/legacy/event/sysml08/tech/full_papers/xu/xu.pdf)  
+  Affiliations: UC Berkeley
   **3. Invariants Mining:**  
-  paper: [Mining Invariants from Console Logs for System Problem Detection](http://research.microsoft.com/pubs/121673/Mining%20Invariants%20from%20Console%20Logs.pdf)  
+  Paper: [Mining Invariants from Console Logs for System Problem Detection](http://research.microsoft.com/pubs/121673/Mining%20Invariants%20from%20Console%20Logs.pdf)  
+  Affiliations: Microsoft Research  
