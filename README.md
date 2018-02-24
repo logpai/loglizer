@@ -5,12 +5,6 @@ Loglizer is an open-source python tool for automatic anomaly detection via log a
 
 Notes: Recently, many researchers and developers emailed us for the datasets, but unfortunately some datasets cannot be distributed due to the copyright restriction. The good news is that we ([logpai](https://github.com/logpai)) are trying to public some log datasets ([loghub](https://github.com/logpai/loghub)). Please follow us or star the project for the latest progress.
 
-## Paper
-Our paper is published on the 27th International Symposium on Software Reliability Engineering (**ISSRE 2016**), Ottawa, Canada. The information can be found here:  
-**Title: Experience Report: System Log Analysis for Anomaly Detection**    
-**Authors:** Shilin He, Jieming Zhu, Pinjia He, and Michael R. Lyu  
-**Paper link:** [paper](http://ieeexplore.ieee.org/document/7774521/)   
-Please feel free to contact us if you have any questions: slhe@cse.cuhk.edu.hk  
 
 ***
 ## Background
@@ -52,3 +46,17 @@ In our toolbox, we mainly focus on Feature Extraction and Anomaly Detection, whi
   **3. Invariants Mining:**  
   Paper: [Mining Invariants from Console Logs for System Problem Detection](http://research.microsoft.com/pubs/121673/Mining%20Invariants%20from%20Console%20Logs.pdf)  
   Affiliations: Microsoft Research  
+
+## Paper
+Our paper is published on the 27th International Symposium on Software Reliability Engineering (**ISSRE 2016**), Ottawa, Canada. The information can be found here:  
+**Title: Experience Report: System Log Analysis for Anomaly Detection**    
+**Authors:** Shilin He, Jieming Zhu, Pinjia He, and Michael R. Lyu  
+**Paper link:** [paper](http://ieeexplore.ieee.org/document/7774521/) 
+**Bibtex:**<br />
+*@Inproceedings{He16ISSRE,<br />
+  title={Experience Report: System Log Analysis for Anomaly Detection},<br />
+  author={He, S. and Zhu, J. and He, P. and Lyu, M. R.},<br />
+  booktitle={ISSRE'16: Proc. of the 27th International Symposium on Software Reliability Engineering}<br />
+}<br />*
+
+Please feel free to contact us if you have any questions: slhe@cse.cuhk.edu.hk  
