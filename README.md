@@ -52,6 +52,7 @@ Our paper is published on the 27th International Symposium on Software Reliabili
 **Title: Experience Report: System Log Analysis for Anomaly Detection**    
 **Authors:** Shilin He, Jieming Zhu, Pinjia He, and Michael R. Lyu  
 **Paper link:** [paper](http://ieeexplore.ieee.org/document/7774521/) 
+
 **Bibtex:**<br />
 *@Inproceedings{He16ISSRE,<br />
   title={Experience Report: System Log Analysis for Anomaly Detection},<br />
