@@ -61,3 +61,8 @@ Our paper is published on the 27th International Symposium on Software Reliabili
 }<br />*
 
 Please feel free to contact us if you have any questions: slhe@cse.cuhk.edu.hk  
+
+
+History:
+May 14, 2016: initial commit
+Sep 21, 2017: update code and ReadME
