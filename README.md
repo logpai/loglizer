@@ -22,7 +22,7 @@ The framework of our anomaly detection toolbox are given as following:
 
 The framework is illustrated as follows:
 
-![Framework of Anomaly Detection](/README/FrameWork.png)
+![Framework of Anomaly Detection](/img/FrameWork.png)
 
 In our toolbox, we mainly focus on Feature Extraction and Anomaly Detection, while Log Collection and Log Parsing are out of the scope of this project. To be more specific, the input is the parsed log events, and the output is whether it is anomaly for each log sequence.
 
