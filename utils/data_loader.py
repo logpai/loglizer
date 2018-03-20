@@ -1,7 +1,11 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+__author__ = 'Shilin He'
+
 import pandas as pd
 import os
 import numpy as np
-import math
+
 
 def hdfs_data_loader(para):
 	""" load the log sequence matrix and labels from the file path.
@@ -160,15 +164,5 @@ def bgl_preprocess_data(para, raw_data, event_mapping_data):
 		labels.append(label)
 	assert inst_number == len(labels)
 	print("Among all instances, %d are anomalies"%sum(labels))
-
-	#TF-IDF
-	# if para['tf-idf']:
-	# 	print('tf-idf preprocessing')
-	# 	idf_data = np.zeros((inst_number,event_num))
-	# 	for j in range(event_num):
-	# 		cnt = np.count_nonzero(event_count_matrix[:,j])
-	# 		if cnt != 0:
-	# 			idf_data[:,j]= event_count_matrix[:,j] * math.log(inst_number/float(cnt))
-	# 	event_count_matrix = idf_data
 	assert event_count_matrix.shape[0] == len(labels)
 	return event_count_matrix, labels

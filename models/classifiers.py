@@ -1,11 +1,12 @@
-import numpy as np
+#!/usr/bin/env python
+# -*- coding: UTF-8 -*-
+__author__ = 'Shilin He'
+
 from sklearn import tree
 from sklearn.linear_model import LogisticRegression
-from sklearn.model_selection import cross_validate
 from sklearn import svm
-from sklearn.metrics import precision_recall_fscore_support
 import math
-
+import utils.evaluation as ev
 
 def data_split(para, raw_data, label_data):
 	""" split data into training set and testing set according to training percentage defined in para.
@@ -35,7 +36,7 @@ def data_split(para, raw_data, label_data):
 
 
 def decision_tree(para, train_data, train_labels, testing_data, testing_labels):
-	""" train a decision tree model and evaluate on testing data
+	""" train a decision tree models and evaluate on testing data
 
 	Args:
 	--------
@@ -58,18 +59,12 @@ def decision_tree(para, train_data, train_labels, testing_data, testing_labels):
 	assert len(prediction) == len(testing_labels)
 
 	if para['cross_validate']:
-		scoring = ['precision', 'recall', 'f1']
-		scores_cv = cross_validate(clf, train_data, train_labels, cv=10, scoring=scoring)
-		precision, recall, f1_score = np.mean([scores_cv['test_precision'], scores_cv['test_recall'], scores_cv['test_f1']], axis=1)
+		ev.cv_evaluate(clf, train_data, train_labels)
 	else:
-		precision, recall, f1_score, _ = np.array(list(precision_recall_fscore_support(testing_labels, prediction)))[:, 1]
-	print('='*20, 'RESULT', '='*20)
-	print("Precision:  %.6f, Recall: %.6f, F1_score: %.6f" % (precision, recall, f1_score))
-	return precision, recall, f1_score
-
+		ev.evaluate(testing_labels, prediction)
 
 def logsitic_regression(para, train_data, train_labels, testing_data, testing_labels):
-	""" train a logistic regression model and evaluate on testing data
+	""" train a logistic regression models and evaluate on testing data
 
 	Args:
 	--------
@@ -92,18 +87,13 @@ def logsitic_regression(para, train_data, train_labels, testing_data, testing_la
 	assert len(prediction) == len(testing_labels)
 
 	if para['cross_validate']:
-		scoring = ['precision', 'recall', 'f1']
-		scores_cv = cross_validate(clf, train_data, train_labels.ravel(), cv=10, scoring=scoring)
-		precision, recall, f1_score = np.mean([scores_cv['test_precision'], scores_cv['test_recall'], scores_cv['test_f1']], axis=1)
+		ev.cv_evaluate(clf, train_data, train_labels)
 	else:
-		precision, recall, f1_score, _ = np.array(list(precision_recall_fscore_support(testing_labels, prediction)))[:, 1]
-	print('='*20, 'RESULT', '='*20)
-	print("Precision:  %.6f, Recall: %.6f, F1_score: %.6f" % (precision, recall, f1_score))
-	return precision, recall, f1_score
+		ev.evaluate(testing_labels, prediction)
 
 
 def SVM(para, train_data, train_labels, testing_data, testing_labels):
-	""" train a support vector machine model and evaluate on testing data
+	""" train a support vector machine models and evaluate on testing data
 
 	Args:
 	--------
@@ -126,11 +116,6 @@ def SVM(para, train_data, train_labels, testing_data, testing_labels):
 	assert len(prediction) == len(testing_labels)
 
 	if para['cross_validate']:
-		scoring = ['precision', 'recall', 'f1']
-		scores_cv = cross_validate(clf, train_data, train_labels.ravel(), cv=10, scoring=scoring)
-		precision, recall, f1_score = np.mean([scores_cv['test_precision'], scores_cv['test_recall'], scores_cv['test_f1']], axis= 1)
+		ev.cv_evaluate(clf, train_data, train_labels)
 	else:
-		precision, recall, f1_score, _ = np.array(list(precision_recall_fscore_support(testing_labels, prediction)))[:, 1]
-	print('='*20, 'RESULT', '='*20)
-	print("Precision:  %.6f, Recall: %.6f, F1_score: %.6f" % (precision, recall, f1_score))
-	return precision, recall, f1_score
+		ev.evaluate(testing_labels, prediction)

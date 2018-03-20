@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 __author__ = 'Shilin He'
-import data_loader as data_loader
-import mining_invariants as mi
+
+from utils import data_loader as data_loader
+from models import mining_invariants as mi
 
 para = {
-'path':'../Data/SOSP_data/',        # directory for input data
+'path':'../../Data/SOSP_data/',        # directory for input data
 'log_seq_file_name':'rm_repeat_rawTFVector.txt', # filename for log sequence data file
 'label_file_name':'rm_repeat_mlabel.txt', # filename for label data file
 'epsilon':2.0,                          # threshold for the step of estimating invariant space

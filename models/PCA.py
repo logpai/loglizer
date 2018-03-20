@@ -1,6 +1,10 @@
+#!/usr/bin/env python
+# -*- coding: UTF-8 -*-
+__author__ = 'Shilin He'
+
 import numpy as np
 import math
-from sklearn.metrics import precision_recall_fscore_support
+import utils.evaluation as ev
 
 
 def weighting(para, raw_data):
@@ -97,6 +101,5 @@ def anomaly_detection(weigh_data, label_data, C, threshold):
 		SPE = np.dot(ya,ya)
 		if SPE > threshold:
 			predict_results[i] = 1	#1 represent failure
-	precision, recall, f1_score, _ = np.array(list(precision_recall_fscore_support(label_data, predict_results)))[:, 1]
-	print('=' * 20, 'RESULT', '=' * 20)
-	print("Precision:  %.6f, Recall: %.6f, F1_score: %.6f" % (precision, recall, f1_score))
+	assert len(label_data) == len(predict_results)
+	ev.evaluate(label_data, predict_results)

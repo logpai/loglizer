@@ -1,14 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 __author__ = 'Shilin He'
-import data_loader as data_loader
-import mining_invariants as mi
+
+from utils import data_loader as data_loader
+from models import mining_invariants as mi
 
 para = {
-'path':'../Data/BGL_data/',                 # directory for input data
+'path':'../../Data/BGL_data/',                 # directory for input data
 'log_file_name':'BGL_MERGED.log',           # filename for log data file
 'log_event_mapping':'logTemplateMap.csv',   # filename for log-event mapping. A list of event index, where each row represents a log
-'save_path': './time_windows/',             # dir for saving sliding window data files to avoid splitting
+'save_path': '../time_windows/',             # dir for saving sliding window data files to avoid splitting
 'select_column':[0,4],                      # select the corresponding columns (label and time) in the raw log file
 'window_size':3,                            # time window (unit: hour)
 'step_size': 1,                             # step size (unit: hour)

@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 __author__ = 'Shilin He'
+
 import numpy as np
 from itertools import combinations
-from sklearn.metrics import precision_recall_fscore_support
+import utils.evaluation as ev
 
 def estimate_invar_spce(para, event_count_matrix):
 	""" Estimate the Invariant Space using SVD decomposition, return the invariant space size r (integer)
@@ -278,6 +279,4 @@ def evaluate(event_count_matrix, invar_dict, groundtruth_labels):
 		prediction.append(label)
 
 	assert len(groundtruth_labels) == len(prediction)
-	precision, recall, f1_score, _ = np.array(list(precision_recall_fscore_support(groundtruth_labels, prediction)))[:, 1]
-	print('=' * 20, 'RESULT', '=' * 20)
-	print("Precision:  %.6f, Recall: %.6f, F1_score: %.6f" % (precision, recall, f1_score))
+	ev.evaluate(groundtruth_labels, prediction)
