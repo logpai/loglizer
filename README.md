@@ -67,3 +67,4 @@ Please feel free to contact us if you have any questions: slhe@cse.cuhk.edu.hk
 ## History:
 * May 14, 2016: initial commit 
 * Sep 21, 2017: update code and ReadME 
+* March 21, 2018: rewrite most of the code, re-organize the project structure, and add detailed comments
