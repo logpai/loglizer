@@ -61,7 +61,9 @@ Our paper is published on the 27th International Symposium on Software Reliabili
   booktitle={ISSRE'16: Proc. of the 27th International Symposium on Software Reliability Engineering}<br />
 }<br />*
 
-Please feel free to contact us if you have any questions: slhe@cse.cuhk.edu.hk  
+
+## Questions:
+For easy maintenance, please raise an issue at [ISSUE](https://github.com/logpai/loglizer/issues/new)
 
 
 ## History:
