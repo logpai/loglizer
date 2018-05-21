@@ -1,18 +1,16 @@
 # loglizer
 **A Python toolkit for anomaly detection via log analysis**
 
-Loglizer is an open-source python tool for automatic anomaly detection via log analysis. In this project, six popular anomaly detection methods are implemented and compared on two public datasets, and detailed information (e.g., experimental results, findings) can be found in our [paper](http://ieeexplore.ieee.org/document/7774521/).
+Loglizer is an open-source python tool for automatic anomaly detection via log analysis. In this project, six popular anomaly detection methods are implemented and evaluated on two public datasets. More details (e.g., experimental results, findings) can be found in our [paper](http://ieeexplore.ieee.org/document/7774521/).
 
 
 ## Log Data
-We collected a number of log datasets in [loghub](https://github.com/logpai/loghub). Please send a request through the link.
+We collected a number of log datasets in [loghub](https://github.com/logpai/loghub). Please send a request to acquire the data through the link.
 
 ***
 ## Background
 Anomaly detection plays an important role in management of modern large-scale distributed systems. Logs, which record system runtime information, are widely used for anomaly detection. Traditionally, developers (or operators) often inspect the logs manually with keyword search and rule matching. The increasing scale and complexity of modern systems, however, make the volume of logs explode, which renders the infeasibility of manual inspection. To reduce manual effort, many anomaly detection methods based on automated log analysis are proposed.  
 In our paper, we provide a detailed review and evaluation of six state-of-the-art log-based anomaly detection methods, including three supervised methods and three unsupervised methods, and also release an open-source toolkit allowing ease of reuse. These methods have been evaluated on two publicly-available production log datasets.
-
-The framework of our anomaly detection toolbox are given as following:
 
 ## Overview of framework
 **1. Log collection:** Logs are generated and collected by system and sofwares during running, which includes distributed systems (e.g., Spark, Hadoop), standalone systems (e.g., Windows, Mac OS) and softwares (e.g., Zookeeper).     
@@ -62,7 +60,7 @@ Our paper is published on the 27th International Symposium on Software Reliabili
 }<br />*
 
 
-## Questions:
+## Question:
 For easy maintenance, please raise an issue at [ISSUE](https://github.com/logpai/loglizer/issues/new)
 
 
