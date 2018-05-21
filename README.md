@@ -1,7 +1,7 @@
 # loglizer
 **A Python toolkit for anomaly detection via log analysis**
 
-Loglizer is an open-source python tool for automatic anomaly detection via log analysis. In this project, six popular anomaly detection methods are implemented and evaluated on two public datasets. More details (e.g., experimental results, findings) can be found in our [paper](http://ieeexplore.ieee.org/document/7774521/).
+Loglizer is an open-source python tool for automatic log-based anomaly detection with machine learning techniques. In this project, six popular anomaly detection methods are implemented and evaluated on two public datasets. More details (e.g., experimental results, findings) can be found in our [paper](http://ieeexplore.ieee.org/document/7774521/).
 
 
 ## Log Data
