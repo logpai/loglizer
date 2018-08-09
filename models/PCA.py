@@ -70,8 +70,7 @@ def get_threshold(para, weigh_data):
 			phi[i] += math.pow(sigma[j],i+1)
 
 	h0 = 1-2*phi[0]*phi[2]/(3*phi[1]*phi[1])
-	# c_alpha = 3.2905
-	c_alpha = 8.1
+	c_alpha = 3.2905
 	threshold = phi[0]*math.pow((c_alpha*math.sqrt(2*phi[1]*h0*h0)/phi[0] + 1.0 + phi[1]*h0*(h0-1)/phi[0]/phi[0]), (1.0/h0))
 	P = U[:,:k]
 	I = np.identity(event_num,int)
