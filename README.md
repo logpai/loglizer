@@ -7,6 +7,9 @@ Loglizer is an open-source python tool for automatic log-based anomaly detection
 ## Log Data
 We collected a number of log datasets in [loghub](https://github.com/logpai/loghub). Please send a request to acquire the data through the link.
 
+## More about logTemplateMap.csv of BGL data
+The file locates in the *demo_bgl* folder. The file is used to quickly index the event Id for each log message. For example, suppose there are 1000 log messages and each of them can be parsed into a corresponding log event (assume 10 log events in total). Then there are 1000 rows in the logTemplateMap.csv, and each entry contains the event id (1-10) of that log.
+
 ***
 ## Background
 Anomaly detection plays an important role in management of modern large-scale distributed systems. Logs, which record system runtime information, are widely used for anomaly detection. Traditionally, developers (or operators) often inspect the logs manually with keyword search and rule matching. The increasing scale and complexity of modern systems, however, make the volume of logs explode, which renders the infeasibility of manual inspection. To reduce manual effort, many anomaly detection methods based on automated log analysis are proposed.  
