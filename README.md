@@ -1,4 +1,4 @@
-<p align="center"> <img src="https://github.com/logpai/logpai.github.io/blob/master/img/logpai_logo.jpg" width="400" height="100"/>
+<p align="center"> <img src="https://github.com/logpai/logpai.github.io/blob/master/img/logpai_logo.jpg" width="500" height="125"/>
 </p>
 
 
