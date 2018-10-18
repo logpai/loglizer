@@ -132,7 +132,7 @@ def invariant_search(para, event_count_matrix, invar_size):
 	init_col_list = init_cols[:]
 	for col in init_cols:
 		if np.count_nonzero(event_count_matrix[:, col]) == 0:
-			invar_dict[frozenset(col)] = [1]
+			invar_dict[tuple(col)] = [1]
 			search_space.remove(col)
 			init_col_list.remove(col)
 	print('the remaining features are: ', init_col_list)
@@ -151,17 +151,17 @@ def invariant_search(para, event_count_matrix, invar_size):
 				search_space.append(items)
 		item_list = []
 		for item in joined_item_list:
-			if frozenset(item) in invar_dict.keys():
+			if tuple(item) in invar_dict.keys():
 				continue
 			if item not in search_space:
 				continue
-			if not check_candi_valid(frozenset(item), length, search_space) and length > 2:
+			if not check_candi_valid(tuple(item), length, search_space) and length > 2:
 				search_space.remove(item)
 				continue 	# an item must be superset of all other subitems in searchSpace, else skip
 			validity, scaled_theta = check_invar_validity(para, event_count_matrix, item)
 			if validity:
 				prune(invar_dict.keys(), set(item), search_space)
-				invar_dict[frozenset(item)] = scaled_theta
+				invar_dict[tuple(item)] = scaled_theta
 				search_space.remove(item)
 			else:
 				item_list.append(item)
