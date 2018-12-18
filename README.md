@@ -2,75 +2,66 @@
 
 
 # loglizer
-**A Python toolkit for anomaly detection via log analysis**
 
-Loglizer is an open-source python tool for automatic log-based anomaly detection with machine learning techniques. In this project, six popular anomaly detection methods are implemented and evaluated on two public datasets. More details (e.g., experimental results, findings) can be found in our [paper](http://ieeexplore.ieee.org/document/7774521/).
+Loglizer is a machine learning-based log analysis toolkit for system anomaly detection. Logs are imperative in the development and maintenance process of many software systems. They record detailed
+runtime information during system operation that allows developers and support engineers to monitor their systems and dissect anomalous behaviors and errors. Loglizer provides such a tool that implements a set of automated log analysis techniques for anomaly detection. 
 
 
-## Log Data
-We collected a number of log datasets in [loghub](https://github.com/logpai/loghub). Please send a request to acquire the data through the link.
+:telescope: If you use loglizer in your research for publication, please kindly cite the following paper.
 
-### More about logTemplateMap.csv of BGL data
-The file locates in the *demo_bgl* folder. The file is used to quickly index the event Id for each log message. For example, suppose there are 1000 log messages and each of them can be parsed into a corresponding log event (assume 10 log events in total). Then there are 1000 rows in the logTemplateMap.csv, and each entry contains the event id (1-10) of that log.
++ Shilin He, Jieming Zhu, Pinjia He, Michael R. Lyu. [Experience Report: System Log Analysis for Anomaly Detection](https://jiemingzhu.github.io/pub/slhe_issre2016.pdf), *IEEE International Symposium on Software Reliability Engineering (**ISSRE**)*, 2016. [[Bibtex](https://dblp.org/rec/bibtex/conf/issre/HeZHL16)]
 
-***
-## Background
-Anomaly detection plays an important role in management of modern large-scale distributed systems. Logs, which record system runtime information, are widely used for anomaly detection. Traditionally, developers (or operators) often inspect the logs manually with keyword search and rule matching. The increasing scale and complexity of modern systems, however, make the volume of logs explode, which renders the infeasibility of manual inspection. To reduce manual effort, many anomaly detection methods based on automated log analysis are proposed.  
-In our paper, we provide a detailed review and evaluation of six state-of-the-art log-based anomaly detection methods, including three supervised methods and three unsupervised methods, and also release an open-source toolkit allowing ease of reuse. These methods have been evaluated on two publicly-available production log datasets.
 
-## Overview of framework
-**1. Log collection:** Logs are generated and collected by system and sofwares during running, which includes distributed systems (e.g., Spark, Hadoop), standalone systems (e.g., Windows, Mac OS) and softwares (e.g., Zookeeper).     
-**2. Log Parsing:** Raw Logs contain too much runtime information (e.g., IP address, file name). These variable information are often removed after log parsing as they are useless for debugging. After parsing, raw logs become log events, which are abstraction of raw logs. Details are given in our previous work: [Logparser](https://github.com/logpai/logparser)  
-**3. Feature Extraction:** Logs are grouped into log sequences via Task ID or time, and these log sequences are vectorized and weighted.  
-**4. Anomaly Detection:** Some machine learning models are trained and applied to detect anomalies.  
-
-The framework is illustrated as follows:
+## Framework
 
 ![Framework of Anomaly Detection](/img/FrameWork.png)
 
-In our toolbox, we mainly focus on Feature Extraction and Anomaly Detection, while Log Collection and Log Parsing are out of the scope of this project. To be more specific, the input is the parsed log events, and the output is whether it is anomaly for each log sequence.
+The log analysis framework for anomaly detection usually comprises the following components:
 
-## Anomaly detection methods
-* ***Supervised Anomaly Detection:***  
-  **1. Logistic Regression:**  
-  Paper: [Fingerprinting the Datacenter: Automated Classification of Performance Crises](http://dl.acm.org/citation.cfm?id=1755926)  
-  Affiliations: UC Berkeley, Cornell, Microsoft  
-  **2. Decision Tree:**  
-  Paper: [Failure Diagnosis Using Decision Trees](http://www.cs.berkeley.edu/~brewer/papers/icac2004_chen_diagnosis.pdf)  
-  Affiliations: UC Berkeley, eBay   
-  **3. SVM:**  
-  Paper: [Failure Prediction in IBM BlueGeneL Event Logs](http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=4536397)  
-  Affiliations: Rutgers University, IBM     
-* ***Unsupervised Anomaly Detection:***  
-  **1. Log Clustering:**  
-  Paper: [Log Clustering based Problem Identification for Online Service Systems](http://www.msr-waypoint.net/apps/pubs/default.aspx?id=260324)  
-  Affiliations: Microsoft Research   
-  **2. PCA:**  
-  Paper: [Large-Scale System Problems Detection by Mining Console Logs](https://www.usenix.org/legacy/event/sysml08/tech/full_papers/xu/xu.pdf)  
-  Affiliations: UC Berkeley  
-  **3. Invariants Mining:**  
-  Paper: [Mining Invariants from Console Logs for System Problem Detection](http://research.microsoft.com/pubs/121673/Mining%20Invariants%20from%20Console%20Logs.pdf)  
-  Affiliations: Microsoft Research  
+1. **Log collection:** Logs are generated at runtime and aggregated into a centralized place with a data streaming pipeline, such as Flume and Kafka. 
 
-## Paper
-Our paper is published on the 27th International Symposium on Software Reliability Engineering (**ISSRE 2016**), Ottawa, Canada. The information can be found here:  
-**Title: Experience Report: System Log Analysis for Anomaly Detection**    
-**Authors:** Shilin He, Jieming Zhu, Pinjia He, and Michael R. Lyu  
-**Paper link:** [paper](http://ieeexplore.ieee.org/document/7774521/) 
+2. **Log parsing:** Logs are naturally unstructured. The goal of log parsing is to convert unstructured log messages into a sequence of structured events, based on which sophisticated machine learning models can be applied. The details of log parsing can be found at [our logparser project](https://github.com/logpai/logparser).
 
-**Bibtex:**<br />
-*@Inproceedings{He16ISSRE,<br />
-  title={Experience Report: System Log Analysis for Anomaly Detection},<br />
-  author={He, S. and Zhu, J. and He, P. and Lyu, M. R.},<br />
-  booktitle={ISSRE'16: Proc. of the 27th International Symposium on Software Reliability Engineering}<br />
-}<br />*
+3. **Feature extraction:** Structured logs can be sliced into separate log sequences through interval window, sliding window, or session window. Then, each log sequence is vectorized into feature representation, for example, using an event counting vector. 
+
+4. **Anomaly detection:** Anomaly detection models are trained to check whether a given feature vector is an anomaly or not.
 
 
-## Question:
-For easy maintenance, please raise an issue at [ISSUE](https://github.com/logpai/loglizer/issues/new)
+## Models
+
+Anomaly detection models currently available:
+
+| Model | Reference |
+| :--- | :--- |
+| **Supervised models** |
+| LR | [EuroSys'10] Peter Bodík, Moises Goldszmidt, Armando Fox, Hans Andersen. [Fingerprinting the Datacenter: Automated Classification of Performance Crises](https://www.microsoft.com/en-us/research/wp-content/uploads/2009/07/hiLighter.pdf). [**Berkeley**, **Microsoft**, **Cornell**] |
+| Decision Tree | [ICAC'04] Mike Chen, Alice X. Zheng, Jim Lloyd, Michael I. Jordan, Eric Brewer. [Failure Diagnosis Using Decision Trees](http://www.cs.berkeley.edu/~brewer/papers/icac2004_chen_diagnosis.pdf). [**Berkeley**, **eBay**] |
+| SVM | [ICDM'07] Yinglung Liang, Yanyong Zhang, Hui Xiong, Ramendra Sahoo. [Failure Prediction in IBM BlueGene/L Event Logs](https://www.researchgate.net/publication/4324148_Failure_Prediction_in_IBM_BlueGeneL_Event_Logs). [**Rutgers University**, **IBM**]|
+| **Unsupervised models** |
+| Clustering | [ICSE'16] Qingwei Lin, Hongyu Zhang, Jian-Guang Lou, Yu Zhang, Xuewei Chen. [Log Clustering based Problem Identification for Online Service Systems](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/07/ICSE-2016-2-Log-Clustering-based-Problem-Identification-for-Online-Service-Systems.pdf). [**Microsoft**]| 
+| PCA | [SOSP'09] Wei Xu, Ling Huang, Armando Fox, David Patterson, Michael I. Jordan. [Large-Scale System Problems Detection by Mining Console Logs](http://iiis.tsinghua.edu.cn/~weixu/files/sosp09.pdf) [**Berkeley**, **Intel**] |
+| Invariants Mining | [ATC'10] Jian-Guang Lou, Qiang Fu, Shengqi Yang, Ye Xu, Jiang Li. [Mining Invariants from Console Logs for System Problem Detection](https://www.usenix.org/legacy/event/atc10/tech/full_papers/Lou.pdf) [**Microsoft**, **BUPT**, **NJU**]|
 
 
-## History:
+## Log data
+We have released a variety of log datasets in [loghub](https://github.com/logpai/loghub) for research purposes. If you are interested in these datasets, please request the logs through the link.
+
+
+## Usage
+
+
+## Contributors
++ [Shilin He](https://shilinhe.github.io), The Chinese University of Hong Kong
++ [Jieming Zhu](https://jiemingzhu.github.io), The Chinese University of Hong Kong, currently at Huawei Noah's Ark Lab
++ [Pinjia He](https://pinjiahe.github.io/), The Chinese University of Hong Kong, currently at ETH Zurich
+
+
+## Feedback
+For any questions or feedback, please post to [the issue page](https://github.com/logpai/loglizer/issues/new). 
+
+
+## History
 * May 14, 2016: initial commit 
-* Sep 21, 2017: update code and ReadME 
-* March 21, 2018: rewrite most of the code, re-organize the project structure, and add detailed comments
+* Sep 21, 2017: update code and readme 
+* March 21, 2018: rewrite most of the code and add detailed comments
+* Dec 15, 2018: restructure the repository with hands-on demo
