@@ -27,16 +27,16 @@ The log analysis framework for anomaly detection usually comprises the following
 
 Anomaly detection models currently available:
 
-| Model | Reference |
+| Model | Paper reference |
 | :--- | :--- |
 | **Supervised models** |
-| LR | [**EuroSys'10**] Peter Bodík, Moises Goldszmidt, Armando Fox, Hans Andersen. [Fingerprinting the Datacenter: Automated Classification of Performance Crises](https://www.microsoft.com/en-us/research/wp-content/uploads/2009/07/hiLighter.pdf). [**Berkeley**, **Microsoft**, **Cornell**] |
-| Decision Tree | [**ICAC'04**] Mike Chen, Alice X. Zheng, Jim Lloyd, Michael I. Jordan, Eric Brewer. [Failure Diagnosis Using Decision Trees](http://www.cs.berkeley.edu/~brewer/papers/icac2004_chen_diagnosis.pdf). [**Berkeley**, **eBay**] |
-| SVM | [**ICDM'07**] Yinglung Liang, Yanyong Zhang, Hui Xiong, Ramendra Sahoo. [Failure Prediction in IBM BlueGene/L Event Logs](https://www.researchgate.net/publication/4324148_Failure_Prediction_in_IBM_BlueGeneL_Event_Logs). [**Rutgers University**, **IBM**]|
+| LR | [**EuroSys'10**] Peter Bodík, Moises Goldszmidt, Armando Fox, Hans Andersen. [Fingerprinting the Datacenter: Automated Classification of Performance Crises](https://www.microsoft.com/en-us/research/wp-content/uploads/2009/07/hiLighter.pdf). [Berkeley, Microsoft, Cornell] |
+| Decision Tree | [**ICAC'04**] Mike Chen, Alice X. Zheng, Jim Lloyd, Michael I. Jordan, Eric Brewer. [Failure Diagnosis Using Decision Trees](http://www.cs.berkeley.edu/~brewer/papers/icac2004_chen_diagnosis.pdf). [Berkeley, eBay] |
+| SVM | [**ICDM'07**] Yinglung Liang, Yanyong Zhang, Hui Xiong, Ramendra Sahoo. [Failure Prediction in IBM BlueGene/L Event Logs](https://www.researchgate.net/publication/4324148_Failure_Prediction_in_IBM_BlueGeneL_Event_Logs). [Rutgers University, IBM]|
 | **Unsupervised models** |
-| Clustering | [**ICSE'16**] Qingwei Lin, Hongyu Zhang, Jian-Guang Lou, Yu Zhang, Xuewei Chen. [Log Clustering based Problem Identification for Online Service Systems](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/07/ICSE-2016-2-Log-Clustering-based-Problem-Identification-for-Online-Service-Systems.pdf). [**Microsoft**]| 
-| PCA | [**SOSP'09**] Wei Xu, Ling Huang, Armando Fox, David Patterson, Michael I. Jordan. [Large-Scale System Problems Detection by Mining Console Logs](http://iiis.tsinghua.edu.cn/~weixu/files/sosp09.pdf) [**Berkeley**, **Intel**] |
-| Invariants Mining | [**ATC'10**] Jian-Guang Lou, Qiang Fu, Shengqi Yang, Ye Xu, Jiang Li. [Mining Invariants from Console Logs for System Problem Detection](https://www.usenix.org/legacy/event/atc10/tech/full_papers/Lou.pdf) [**Microsoft**, **BUPT**, **NJU**]|
+| Clustering | [**ICSE'16**] Qingwei Lin, Hongyu Zhang, Jian-Guang Lou, Yu Zhang, Xuewei Chen. [Log Clustering based Problem Identification for Online Service Systems](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/07/ICSE-2016-2-Log-Clustering-based-Problem-Identification-for-Online-Service-Systems.pdf). [Microsoft]| 
+| PCA | [**SOSP'09**] Wei Xu, Ling Huang, Armando Fox, David Patterson, Michael I. Jordan. [Large-Scale System Problems Detection by Mining Console Logs](http://iiis.tsinghua.edu.cn/~weixu/files/sosp09.pdf) [Berkeley, Intel] |
+| Invariants Mining | [**ATC'10**] Jian-Guang Lou, Qiang Fu, Shengqi Yang, Ye Xu, Jiang Li. [Mining Invariants from Console Logs for System Problem Detection](https://www.usenix.org/legacy/event/atc10/tech/full_papers/Lou.pdf) [Microsoft, BUPT, NJU]|
 
 
 ## Log data
@@ -44,6 +44,7 @@ We have released a variety of log datasets in [loghub](https://github.com/logpai
 
 
 ## Usage
+Please follow [the demo](./docs/demo.md) in the docs to get started.
 
 
 ## Contributors
