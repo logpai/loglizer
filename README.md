@@ -13,7 +13,7 @@ runtime information during system operation that allows developers and support e
 
 ## Framework
 
-![Framework of Anomaly Detection](/img/FrameWork.png)
+![Framework of Anomaly Detection](/docs/img/FrameWork.png)
 
 The log analysis framework for anomaly detection usually comprises the following components:
 
