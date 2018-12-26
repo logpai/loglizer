@@ -11,7 +11,7 @@ runtime information during system operation that allows developers and support e
 + Shilin He, Jieming Zhu, Pinjia He, Michael R. Lyu. [Experience Report: System Log Analysis for Anomaly Detection](https://jiemingzhu.github.io/pub/slhe_issre2016.pdf), *IEEE International Symposium on Software Reliability Engineering (ISSRE)*, 2016. [[Bibtex](https://dblp.org/rec/bibtex/conf/issre/HeZHL16)]
 
 ## FAQ
-We are refactoring our project to make the related pieces of loghub, logparser, loglizer working together. But this may need some time. We receive many enquires about the demo of loglizer, especially about the data. The following the quick walkaround to obtain the input structured data before we release the next version. 
+We are refactoring our project to make the related pieces of loghub, logparser, loglizer working together. But this may need some time. We receive many enquires about the demo of loglizer, especially about the data. The following the quick reference to obtain the input structured data before we release the next version. 
 
 1. Where is the data? 
   > Actually, we have uploaded all the available log data onto [loghub](https://github.com/logpai/loghub). The raw logs and label info can be downloaded from the Zenodo link there. Note that the raw logs need to be parsed to generate the structured data for loglizer.
