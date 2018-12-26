@@ -10,6 +10,18 @@ runtime information during system operation that allows developers and support e
 :telescope: If you use loglizer in your research for publication, please kindly cite the following paper.
 + Shilin He, Jieming Zhu, Pinjia He, Michael R. Lyu. [Experience Report: System Log Analysis for Anomaly Detection](https://jiemingzhu.github.io/pub/slhe_issre2016.pdf), *IEEE International Symposium on Software Reliability Engineering (ISSRE)*, 2016. [[Bibtex](https://dblp.org/rec/bibtex/conf/issre/HeZHL16)]
 
+## FAQ
+We are refactoring our project to make the related pieces of loghub, logparser, loglizer working together. But this may need some time. We receive many enquires about the demo of loglizer, especially about the data. The following the quick walkaround to obtain the input structured data before we release the next version. 
+
+1. Where is the data? 
+  > Actually, we have uploaded all the available log data onto [loghub](https://github.com/logpai/loghub). The raw logs and label info can be downloaded from the Zenodo link there. Note that the raw logs need to be parsed to generate the structured data for loglizer.
+
+2. I cannot find 'rm_repeat_rawTFVector.txt and 'rm_repeat_mlabel.txt'?
+  > 'rm_repeat_mlabel.txt' is renamed to "anomaly_labels.csv" in loghub dataset. 'rm_repeat_rawTFVector.txt' represents the feature vectors by 1) parse the HDFS log 2) generating log sequence by session windows using blk_id 3) count event frequency within each session window and get a feature vector, which is a row of 'rm_repeat_rawTFVector.txt'.
+
+3. Where to find BGL_MERGED.log and logTemplateMap.csv?
+  > BGL log can be downloaded from loghub. logTemplateMap.csv is available at https://github.com/logpai/logparser/tree/master/logs/BGL as "BGL_templates.csv" 
+  
 
 ## Framework
 
