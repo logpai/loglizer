@@ -3,7 +3,7 @@
 
 # loglizer
 
-Loglizer is a machine learning-based log analysis toolkit for system anomaly detection. Logs are imperative in the development and maintenance process of many software systems. They record detailed
+**Loglizer is a machine learning-based log analysis toolkit for system anomaly detection**. Logs are imperative in the development and maintenance process of many software systems. They record detailed
 runtime information during system operation that allows developers and support engineers to monitor their systems and dissect anomalous behaviors and errors. Loglizer provides such a tool that implements a set of automated log analysis techniques for anomaly detection. 
 
 
