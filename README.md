@@ -56,7 +56,7 @@ We have released a variety of log datasets in [loghub](https://github.com/logpai
 
 
 ## Usage
-Please follow [the demo](./docs/demo.md) in the docs to get started.
+(Under construction) Please follow [the demo](./docs/demo.md) in the docs to get started.
 
 
 ## Contributors
