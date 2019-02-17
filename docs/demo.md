@@ -27,7 +27,7 @@ $ cd /loglizer/demo
 ```
 
 ### Run loglizer
-You can try the demos of loglizer on HDFS_2k.log as follows:
+You can try the demo scripts of loglizer on HDFS_100k.log_structured.csv as follows:
 
 ```
 $ mkdir loglizer
