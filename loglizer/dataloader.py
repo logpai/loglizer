@@ -82,36 +82,10 @@ def load_HDFS(log_file, label_file=None, window='session', train_ratio=0.8):
 
 def load_BGL(log_file, label_file=None, window='sliding', time_interval=60, stepping_size=60, 
              train_ratio=0.8):
-    """  Load BGL structured log into train and test data
+    """  TODO
 
-    Arguments
-    ---------
-    para: the parameters dictionary
-
-    Returns
-    -------
-    raw_data: list of (label, time)
-    event_mapping_data: a list of event index, where each row index indicates a corresponding log
     """
-    file_path = para['path'] + para['log_file_name']
-    event_mapping_path = para['path'] + para['log_event_mapping']
-    # load data
-    data_df = pd.read_csv(file_path, delimiter=r'\s+', header=None, names = ['label','time'], usecols = para['select_column']) #, parse_dates = [1], date_parser=dateparse)
-    # convert to date time format
-    data_df['time'] = pd.to_datetime(data_df['time'], format="%Y-%m-%d-%H.%M.%S.%f")
-    # calculate the time interval since the start time
-    data_df['seconds_since'] = (data_df['time']-data_df['time'][0]).dt.total_seconds().astype(int)
-    # get the label for each log
-    data_df['label'] = (data_df['label'] != '-').astype(int)
-    raw_data = data_df[['label','seconds_since']].values
 
-    # load the event mapping list
-    event_mapping = pd.read_csv(event_mapping_path, delimiter=r'\s+', header=None, usecols = [0], dtype =int)
-    event_mapping_data = event_mapping.values
-    print("The raw data shape is {} and label shape is {}".format(raw_data.shape, event_mapping_data.shape))
-    assert raw_data.shape[0] == event_mapping_data.shape[0]
-    print('The number of anomaly logs is %d, but it requires further processing' % sum(raw_data[:, 0]))
-    return raw_data, event_mapping_data
 
 def bgl_preprocess_data(para, raw_data, event_mapping_data):
     """ split logs into sliding windows, built an event count matrix and get the corresponding label
