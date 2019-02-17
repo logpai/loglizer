@@ -42,7 +42,7 @@ Anomaly detection models currently available:
 ## Log data
 We have released a set of labeled log datasets in [loghub](https://github.com/logpai/loghub) for research purposes. If you are interested in the datasets, please follow the link to submit your access request.
 
-## Usage
+## Demo
 Please follow [the demo](./docs/demo.md) in the docs to get started.
 
 
