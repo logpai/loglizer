@@ -6,7 +6,7 @@
 **Loglizer is a machine learning-based log analysis toolkit for system anomaly detection**. Logs are imperative in the development and maintenance process of many software systems. They record detailed
 runtime information during system operation that allows developers and support engineers to monitor their systems and dissect anomalous behaviors and errors. Loglizer provides such a tool that implements a set of automated log analysis techniques for anomaly detection. 
 
-:telescope: **News:** We have updated the demo code for better usage by 2019/02/18.
+:telescope: **News: We have updated the hands-on demo for code readability by 2019/02/18.**
 
 :telescope: If you use loglizer in your research for publication, please kindly cite the following paper.
 + Shilin He, Jieming Zhu, Pinjia He, Michael R. Lyu. [Experience Report: System Log Analysis for Anomaly Detection](https://jiemingzhu.github.io/pub/slhe_issre2016.pdf), *IEEE International Symposium on Software Reliability Engineering (ISSRE)*, 2016. [[Bibtex](https://dblp.org/rec/bibtex/conf/issre/HeZHL16)]
@@ -40,8 +40,7 @@ Anomaly detection models currently available:
 
 
 ## Log data
-We have released a variety of log datasets in [loghub](https://github.com/logpai/loghub) for research purposes. If you are interested in these datasets, please request the logs through the link.
-
+We have released a set of labeled log datasets in [loghub](https://github.com/logpai/loghub) for research purposes. If you are interested in the datasets, please follow the link to submit your access request.
 
 ## Usage
 Please follow [the demo](./docs/demo.md) in the docs to get started.
@@ -60,5 +59,5 @@ For any questions or feedback, please post to [the issue page](https://github.co
 ## History
 * May 14, 2016: initial commit 
 * Sep 21, 2017: update code and readme 
-* March 21, 2018: rewrite most of the code and add detailed comments
-* Dec 15, 2018: restructure the repository with hands-on demo
+* Mar 21, 2018: rewrite most of the code and add detailed comments
+* Feb 18, 2019: restructure the repository with hands-on demo
