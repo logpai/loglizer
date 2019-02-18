@@ -17,14 +17,15 @@ from ..utils import metrics
 
 class LR(object):
 
-    def __init__(self):
+    def __init__(self, penalty='l2', C=100, tol=0.01, class_weight=None, max_iter=100):
         """ The Invariants Mining model for anomaly detection
 
         Attributes
         ----------
             classifier: object, the classifier for anomaly detection
         """
-        self.classifier = LogisticRegression(C=100, penalty='l1', tol=0.01, class_weight='balanced', multi_class='ovr')
+        self.classifier = LogisticRegression(penalty=penalty, C=C, tol=tol, class_weight=class_weight,
+                                             max_iter=max_iter)
 
     def fit(self, X, y):
         """
@@ -46,8 +47,7 @@ class LR(object):
         -------
             y_pred: ndarray, the predicted label vector of shape (num_instances,)
         """
-        
-        y_pred = list(self.classifier.predict(X))
+        y_pred = self.classifier.predict(X)
         return y_pred
 
     def evaluate(self, X, y_true):

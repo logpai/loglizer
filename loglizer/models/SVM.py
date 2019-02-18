@@ -16,15 +16,20 @@ from ..utils import metrics
 
 class SVM(object):
 
-    def __init__(self):
+    def __init__(self, penalty='l1', tol=0.01, C=1, dual=False, class_weight=None, 
+                 max_iter=100):
         """ The Invariants Mining model for anomaly detection
-
+        Arguments
+        ---------
+        See SVM API: https://scikit-learn.org/stable/modules/generated/sklearn.svm.LinearSVC.html
+        
         Attributes
         ----------
             classifier: object, the classifier for anomaly detection
 
         """
-        self.classifier = svm.LinearSVC(penalty='l1', tol=0.0001, C=1, dual=False, fit_intercept=True, intercept_scaling=1, class_weight='balanced', max_iter=1000)
+        self.classifier = svm.LinearSVC(penalty=penalty, tol=tol, C=C, dual=dual, 
+                                        class_weight=class_weight, max_iter=max_iter)
 
     def fit(self, X, y):
         """

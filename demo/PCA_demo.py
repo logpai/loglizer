@@ -17,7 +17,7 @@ if __name__ == '__main__':
 
     feature_extractor = preprocessing.FeatureExtractor()
     x_train = feature_extractor.fit_transform(x_train, term_weighting='tf-idf', 
-                                            normalization='zero-mean')
+                                              normalization='zero-mean')
     x_test = feature_extractor.transform(x_test)
 
     model = PCA()

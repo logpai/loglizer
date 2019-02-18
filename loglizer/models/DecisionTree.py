@@ -16,15 +16,19 @@ from ..utils import metrics
 
 class DecisionTree(object):
 
-    def __init__(self):
+    def __init__(self, criterion='gini', max_depth=None, max_features=None, class_weight=None):
         """ The Invariants Mining model for anomaly detection
+        Arguments
+        ---------
+        See DecisionTreeClassifier API: https://scikit-learn.org/stable/modules/generated/sklearn.svm.LinearSVC.html
 
         Attributes
         ----------
             classifier: object, the classifier for anomaly detection
 
         """
-        self.classifier = tree.DecisionTreeClassifier()
+        self.classifier = tree.DecisionTreeClassifier(criterion=criterion, max_depth=max_depth,
+                          max_features=max_features, class_weight=class_weight)
 
     def fit(self, X, y):
         """
