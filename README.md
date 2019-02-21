@@ -4,8 +4,8 @@
 # loglizer
 
 
-**Loglizer is a machine learning-based log analysis toolkit for automated anomaly detection and **. 
-  > Loglizer是一款基于AI的日志大数据分析工具, 能用于自动异常检测、智能故障诊断等场景
+**Loglizer is a machine learning-based log analysis toolkit for automated anomaly detection**. 
+> Loglizer是一款基于AI的日志大数据分析工具, 能用于自动异常检测、智能故障诊断等场景
   
 
 Logs are imperative in the development and maintenance process of many software systems. They record detailed
