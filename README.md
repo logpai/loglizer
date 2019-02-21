@@ -3,8 +3,13 @@
 
 # loglizer
 
-**Loglizer is a machine learning-based log analysis toolkit for system anomaly detection**. Logs are imperative in the development and maintenance process of many software systems. They record detailed
-runtime information during system operation that allows developers and support engineers to monitor their systems and dissect anomalous behaviors and errors. Loglizer provides such a tool that implements a set of automated log analysis techniques for anomaly detection. 
+
+**Loglizer is a machine learning-based log analysis toolkit for automated anomaly detection and **. 
+  > Loglizer是一款基于AI的日志大数据分析工具, 能用于自动异常检测、智能故障诊断等场景
+  
+
+Logs are imperative in the development and maintenance process of many software systems. They record detailed
+runtime information during system operation that allows developers and support engineers to monitor their systems and dissect anomalous behaviors and errors. Loglizer provides a tool that implements a set of machine-learning based log analysis techniques for automated anomaly detection. 
 
 :telescope: **News: We have updated the hands-on demo for code readability by 2019/02/18.**
 
@@ -30,13 +35,13 @@ Anomaly detection models currently available:
 | Model | Paper reference |
 | :--- | :--- |
 | **Supervised models** |
-| LR | [**EuroSys'10**] Peter Bodík, Moises Goldszmidt, Armando Fox, Hans Andersen. [Fingerprinting the Datacenter: Automated Classification of Performance Crises](https://www.microsoft.com/en-us/research/wp-content/uploads/2009/07/hiLighter.pdf). [**Microsoft**] |
-| Decision Tree | [**ICAC'04**] Mike Chen, Alice X. Zheng, Jim Lloyd, Michael I. Jordan, Eric Brewer. [Failure Diagnosis Using Decision Trees](http://www.cs.berkeley.edu/~brewer/papers/icac2004_chen_diagnosis.pdf). [**eBay**] |
-| SVM | [**ICDM'07**] Yinglung Liang, Yanyong Zhang, Hui Xiong, Ramendra Sahoo. [Failure Prediction in IBM BlueGene/L Event Logs](https://www.researchgate.net/publication/4324148_Failure_Prediction_in_IBM_BlueGeneL_Event_Logs). [**IBM**]|
+| LR | [**EuroSys'10**] [Fingerprinting the Datacenter: Automated Classification of Performance Crises](https://www.microsoft.com/en-us/research/wp-content/uploads/2009/07/hiLighter.pdf), by Peter Bodík, Moises Goldszmidt, Armando Fox, Hans Andersen. [**Microsoft**] |
+| Decision Tree | [**ICAC'04**] [Failure Diagnosis Using Decision Trees](http://www.cs.berkeley.edu/~brewer/papers/icac2004_chen_diagnosis.pdf), by Mike Chen, Alice X. Zheng, Jim Lloyd, Michael I. Jordan, Eric Brewer. [**eBay**] |
+| SVM | [**ICDM'07**] [Failure Prediction in IBM BlueGene/L Event Logs](https://www.researchgate.net/publication/4324148_Failure_Prediction_in_IBM_BlueGeneL_Event_Logs), Yinglung Liang, Yanyong Zhang, Hui Xiong, Ramendra Sahoo. [**IBM**]|
 | **Unsupervised models** |
-| Clustering | [**ICSE'16**] Qingwei Lin, Hongyu Zhang, Jian-Guang Lou, Yu Zhang, Xuewei Chen. [Log Clustering based Problem Identification for Online Service Systems](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/07/ICSE-2016-2-Log-Clustering-based-Problem-Identification-for-Online-Service-Systems.pdf). [**Microsoft**]| 
-| PCA | [**SOSP'09**] Wei Xu, Ling Huang, Armando Fox, David Patterson, Michael I. Jordan. [Large-Scale System Problems Detection by Mining Console Logs](http://iiis.tsinghua.edu.cn/~weixu/files/sosp09.pdf) [**Intel**] |
-| Invariants Mining | [**ATC'10**] Jian-Guang Lou, Qiang Fu, Shengqi Yang, Ye Xu, Jiang Li. [Mining Invariants from Console Logs for System Problem Detection](https://www.usenix.org/legacy/event/atc10/tech/full_papers/Lou.pdf) [**Microsoft**]|
+| Clustering | [**ICSE'16**] [Log Clustering based Problem Identification for Online Service Systems](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/07/ICSE-2016-2-Log-Clustering-based-Problem-Identification-for-Online-Service-Systems.pdf), Qingwei Lin, Hongyu Zhang, Jian-Guang Lou, Yu Zhang, Xuewei Chen. [**Microsoft**]| 
+| PCA | [**SOSP'09**] [Large-Scale System Problems Detection by Mining Console Logs](http://iiis.tsinghua.edu.cn/~weixu/files/sosp09.pdf), Wei Xu, Ling Huang, Armando Fox, David Patterson, Michael I. Jordan. [**Intel**] |
+| Invariants Mining | [**ATC'10**] [Mining Invariants from Console Logs for System Problem Detection](https://www.usenix.org/legacy/event/atc10/tech/full_papers/Lou.pdf), Jian-Guang Lou, Qiang Fu, Shengqi Yang, Ye Xu, Jiang Li. [**Microsoft**]|
 
 
 ## Log data
