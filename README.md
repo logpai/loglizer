@@ -14,7 +14,7 @@ runtime information during system operation that allows developers and support e
 :telescope: **News: We have updated the hands-on demo for code readability by 2019/02/18.**
 
 :telescope: If you use loglizer in your research for publication, please kindly cite the following paper.
-+ Shilin He, Jieming Zhu, Pinjia He, Michael R. Lyu. [Experience Report: System Log Analysis for Anomaly Detection](https://jiemingzhu.github.io/pub/slhe_issre2016.pdf), *IEEE International Symposium on Software Reliability Engineering (ISSRE)*, 2016. [[Bibtex](https://dblp.org/rec/bibtex/conf/issre/HeZHL16)]
++ Shilin He, Jieming Zhu, Pinjia He, Michael R. Lyu. [Experience Report: System Log Analysis for Anomaly Detection](https://jiemingzhu.github.io/pub/slhe_issre2016.pdf), *IEEE International Symposium on Software Reliability Engineering (ISSRE)*, 2016. [[Bibtex](https://dblp.org/rec/bibtex/conf/issre/HeZHL16)][中文版本](https://github.com/AmateurEvents/article/issues/2)
 
 ## Framework
 
