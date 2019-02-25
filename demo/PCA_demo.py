@@ -14,7 +14,6 @@ if __name__ == '__main__':
                                                                 label_file=label_file,
                                                                 window='session', 
                                                                 train_ratio=0.5)
-
     feature_extractor = preprocessing.FeatureExtractor()
     x_train = feature_extractor.fit_transform(x_train, term_weighting='tf-idf', 
                                               normalization='zero-mean')
@@ -25,6 +24,6 @@ if __name__ == '__main__':
 
     print('Train validation:')
     precision, recall, f1 = model.evaluate(x_train, y_train)
-
+    
     print('Test validation:')
     precision, recall, f1 = model.evaluate(x_test, y_test)

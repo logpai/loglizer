@@ -13,15 +13,16 @@ import numpy as np
 import re
 import sys
 from sklearn.utils import shuffle
+from collections import OrderedDict
 
 
-def load_HDFS(log_file, label_file=None, window='session', train_ratio=0.8):
+def load_HDFS(log_file, label_file=None, window='session', train_ratio=0.5, save_df=False):
     """ Load HDFS structured log into train and test data
 
     Arguments
     ---------
         log_file: str, the file path of structured log.
-        label_file: str, the file path of anomaly labels.
+        label_file: str, the file path of anomaly labels, None for unlabeled data
         window: str, the window options including `session` (default).
         train_ratio: float, the ratio of training data for train/test split.
 
@@ -31,51 +32,78 @@ def load_HDFS(log_file, label_file=None, window='session', train_ratio=0.8):
         (x_test, y_test): the testing data
     """
 
-    assert window == 'session', "Only window=`session` is supported for HDFS dataset."
+    print('====== Input data summary ======')
 
     if log_file.endswith('.npz'):
-        pass
+        data = np.load(log_file)
+        x_data = data['x_data']
+        y_data = data['y_data']
+        pos_idx = y_data > 0
+        x_pos = x_data[pos_idx]
+        y_pos = y_data[pos_idx]
+        x_neg = x_data[~pos_idx]
+        y_neg = y_data[~pos_idx]
+        train_pos = int(train_ratio * x_pos.shape[0])
+        train_neg = int(train_ratio * x_neg.shape[0])
+        x_train = np.hstack([x_pos[0:train_pos], x_neg[0:train_neg]])
+        y_train = np.hstack([y_pos[0:train_pos], y_neg[0:train_neg]])
+        x_test = np.hstack([x_pos[train_pos:], x_neg[train_neg:]])
+        y_test = np.hstack([y_pos[train_pos:], y_neg[train_neg:]])
 
     elif log_file.endswith('.csv'):
+        assert window == 'session', "Only window=`session` is supported for HDFS dataset."
         struct_log = pd.read_csv(log_file, engine='c', na_filter=False, memory_map=True)
-        data_df = pd.DataFrame(columns=['EventSequence'])
+        data_dict = OrderedDict()
         for idx, row in struct_log.iterrows():
             blkId_list = re.findall(r'(blk_-?\d+)', row['Content'])
             blkId_set = set(blkId_list)
             for blk_Id in blkId_set:
-                if not blk_Id in data_df.index:
-                    data_df.loc[blk_Id, 'EventSequence'] = []
-                data_df.loc[blk_Id, 'EventSequence'].append(row['EventId'])
+                if not blk_Id in data_dict:
+                    data_dict[blk_Id] = []
+                data_dict[blk_Id].append(row['EventId'])
+        data_df = pd.DataFrame(list(data_dict.items()), columns=['BlockId', 'EventSequence'])
 
-        label_data = pd.read_csv(label_file, engine='c', na_filter=False, memory_map=True)
-        label_data = label_data.set_index('BlockId')
-        label_dict = label_data['Label'].to_dict()
-        data_df['Label'] = [1 if label_dict[x] == 'Anomaly' else 0 for x in data_df.index]
-        # data_df['BLK'] = data_df.index
-        # data_df.to_csv('out.csv', index=False)
+        if label_file:
+            label_data = pd.read_csv(label_file, engine='c', na_filter=False, memory_map=True)
+            label_data = label_data.set_index('BlockId')
+            label_dict = label_data['Label'].to_dict()
+            data_df['Label'] = data_df['BlockId'].apply(lambda x: 1 if label_dict[x] == 'Anomaly' else 0)
 
-        # Split train and test data
-        pos_data = data_df[data_df['Label'] == 1].reset_index()
-        neg_data = data_df[data_df['Label'] == 0].reset_index()
-        num_train_pos = int(len(pos_data) * train_ratio)
-        num_train_neg = int(len(neg_data) * train_ratio)
-        train_data = pd.concat([pos_data.loc[:num_train_pos - 1, :], neg_data.loc[:num_train_neg - 1, :]])
-        train_data = shuffle(train_data)
-        test_data = pd.concat([pos_data.loc[num_train_pos:, :], neg_data.loc[num_train_neg:, :]])
+            # Split train and test data
+            pos_data = data_df[data_df['Label'] == 1].reset_index()
+            neg_data = data_df[data_df['Label'] == 0].reset_index()
+            num_train_pos = int(len(pos_data) * train_ratio)
+            num_train_neg = int(len(neg_data) * train_ratio)
+            train_data = pd.concat([pos_data.loc[:num_train_pos - 1, :], neg_data.loc[:num_train_neg - 1, :]])
+            train_data = shuffle(train_data)
+            test_data = pd.concat([pos_data.loc[num_train_pos:, :], neg_data.loc[num_train_neg:, :]])
 
-        (x_train, y_train)  = (train_data['EventSequence'].values, train_data['Label'].values)
-        (x_test, y_test) = (test_data['EventSequence'].values, test_data['Label'].values)
+            (x_train, y_train)  = (train_data['EventSequence'].values, train_data['Label'].values)
+            (x_test, y_test) = (test_data['EventSequence'].values, test_data['Label'].values)
+        
+        if save_df:
+            data_df.to_csv('data_df.csv', index=False)
 
+        if not label_file:
+            print('Total: {} instances'.format(len(data_df)))
+            x_data = data_df['EventSequence'].values
+            return (x_data, None), (None, None)
     else:
         raise NotImplementedError('load_HDFS only support csv and npz files!')
 
-    print('====== Input data summary ======')
+    num_train = x_train.shape[0]
+    num_test = x_test.shape[0]
+    num_total = num_train + num_test
+    num_train_pos = sum(y_train)
+    num_test_pos = sum(y_test)
+    num_pos = num_train_pos + num_test_pos
+
     print('Total: {} instances, {} anomaly, {} normal' \
-          .format(len(data_df), len(pos_data), len(neg_data)))
+          .format(num_total, num_pos, num_total - num_pos))
     print('Train: {} instances, {} anomaly, {} normal' \
-          .format(len(x_train), num_train_pos, num_train_neg))
+          .format(num_train, num_train_pos, num_train - num_train_pos))
     print('Test: {} instances, {} anomaly, {} normal\n' \
-          .format(len(x_test), len(pos_data) - num_train_pos, len(neg_data) - num_train_neg))
+          .format(num_test, num_test_pos, num_test - num_test_pos))
 
     return (x_train, y_train), (x_test, y_test)
 
