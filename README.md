@@ -23,8 +23,8 @@ runtime information during system operation that allows developers and support e
 The log analysis framework for anomaly detection usually comprises the following components:
 
 1. **Log collection:** Logs are generated at runtime and aggregated into a centralized place with a data streaming pipeline, such as Flume and Kafka. 
-2. **Log parsing:** Logs are naturally unstructured. The goal of log parsing is to convert unstructured log messages into a sequence of structured events, based on which sophisticated machine learning models can be applied. The details of log parsing can be found at [our logparser project](https://github.com/logpai/logparser).
-3. **Feature extraction:** Structured logs can be sliced into separate log sequences through interval window, sliding window, or session window. Then, each log sequence is vectorized into feature representation, for example, using an event counting vector. 
+2. **Log parsing:** The goal of log parsing is to convert unstructured log messages into a map of structured events, based on which sophisticated machine learning models can be applied. The details of log parsing can be found at [our logparser project](https://github.com/logpai/logparser).
+3. **Feature extraction:** Structured logs can be sliced into short log sequences through interval window, sliding window, or session window. Then, feature extraction is performed to vectorize each log sequence, for example, using an event counting vector. 
 4. **Anomaly detection:** Anomaly detection models are trained to check whether a given feature vector is an anomaly or not.
 
 
@@ -45,10 +45,23 @@ Anomaly detection models currently available:
 
 
 ## Log data
-We have released a set of labeled log datasets in [loghub](https://github.com/logpai/loghub) for research purposes. If you are interested in the datasets, please follow the link to submit your access request.
+We have collected a set of labeled log datasets in [loghub](https://github.com/logpai/loghub) for research purposes. If you are interested in the datasets, please follow the link to submit your access request.
 
 ## Demo
 Please follow [the demo](./docs/demo.md) in the docs to get started.
+
+## Benchmarking results
+
+| Model | Precision | Recall | F1 |
+| :----:|:----:|:----:|:----:|
+| LR|
+|Decision Tree |
+| SVM|
+| Clustering |
+| PCA | 0.975 | 0.635 | 0.769|
+| Invariants Mining | 0.888 | 0.945 | 0.915|
+
+
 
 
 ## Contributors
