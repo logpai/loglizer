@@ -54,15 +54,12 @@ Please follow [the demo](./docs/demo.md) in the docs to get started.
 
 | Model | Precision | Recall | F1 |
 | :----:|:----:|:----:|:----:|
-| LR|
-|Decision Tree |
-| SVM|
+| LR| 0.955 |	0.911 |	0.933 |
+| Decision Tree | 0.998 |	0.998 |	0.998 |
+| SVM| 0.959 |	0.970 |	0.965 |
 | Clustering |
 | PCA | 0.975 | 0.635 | 0.769|
 | Invariants Mining | 0.888 | 0.945 | 0.915|
-
-
-
 
 ## Contributors
 + [Shilin He](https://shilinhe.github.io), The Chinese University of Hong Kong
