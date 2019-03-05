@@ -7,7 +7,7 @@ Authors:
 Reference: 
     [1] Jian-Guang Lou, Qiang Fu, Shengqi Yang, Ye Xu, Jiang Li. Mining Invariants 
         from Console Logs for System Problem Detection. USENIX Annual Technical 
-        Conference, 2010.
+        Conference (ATC), 2010.
 
 """
 

@@ -16,7 +16,7 @@ from sklearn.utils import shuffle
 from collections import OrderedDict
 
 
-def load_HDFS(log_file, label_file=None, window='session', train_ratio=0.5, save_df=False):
+def load_HDFS(log_file, label_file=None, window='session', train_ratio=0.5, save_csv=False):
     """ Load HDFS structured log into train and test data
 
     Arguments
@@ -81,8 +81,8 @@ def load_HDFS(log_file, label_file=None, window='session', train_ratio=0.5, save
             (x_train, y_train)  = (train_data['EventSequence'].values, train_data['Label'].values)
             (x_test, y_test) = (test_data['EventSequence'].values, test_data['Label'].values)
         
-        if save_df:
-            data_df.to_csv('data_df.csv', index=False)
+        if save_csv:
+            data_df.to_csv('data_instances.csv', index=False)
 
         if not label_file:
             print('Total: {} instances'.format(len(data_df)))

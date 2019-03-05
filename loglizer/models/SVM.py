@@ -6,7 +6,8 @@ Authors:
 
 Reference: 
     [1] Yinglung Liang, Yanyong Zhang, Hui Xiong, Ramendra Sahoo. Failure Prediction 
-        in IBM BlueGene/L Event Logs. ICDM, 2007.
+        in IBM BlueGene/L Event Logs. IEEE International Conference on Data Mining
+        (ICDM), 2007.
 
 """
 

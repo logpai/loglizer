@@ -7,7 +7,8 @@ Authors:
 
 Reference: 
     [1] Peter Bodík, Moises Goldszmidt, Armando Fox, Hans Andersen. Fingerprinting 
-        the Datacenter: Automated Classification of Performance Crises. EuroSys, 2010.
+        the Datacenter: Automated Classification of Performance Crises. The European 
+        Conference on Computer Systems (EuroSys), 2010.
 
 """
 

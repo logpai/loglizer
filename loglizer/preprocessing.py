@@ -25,7 +25,7 @@ class FeatureExtractor(object):
         self.normalization = None
         self.oov = None
 
-    def fit_transform(self, X_seq, term_weighting=None, normalization=None, oov=True, min_count=1):
+    def fit_transform(self, X_seq, term_weighting=None, normalization=None, oov=False, min_count=1):
         """ Fit and transform the data matrix
 
         Arguments

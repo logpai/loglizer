@@ -10,8 +10,8 @@ struct_log = '../data/HDFS/HDFS_100k.log_structured.csv' # The structured log fi
 
 if __name__ == '__main__':
     ## 1. Load strutured log file and extract feature vectors
-    # Save the raw event sequence file by setting save_df=True
-    (x_train, _), (_, _) = dataloader.load_HDFS(struct_log, window='session', save_df=True)
+    # Save the raw event sequence file by setting save_csv=True
+    (x_train, _), (_, _) = dataloader.load_HDFS(struct_log, window='session', save_csv=True)
     feature_extractor = preprocessing.FeatureExtractor()
     x_train = feature_extractor.fit_transform(x_train, term_weighting='tf-idf', 
                                               normalization='zero-mean')

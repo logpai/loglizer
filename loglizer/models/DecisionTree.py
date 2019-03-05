@@ -6,7 +6,8 @@ Authors:
 
 Reference: 
     [1] Mike Chen, Alice X. Zheng, Jim Lloyd, Michael I. Jordan, Eric Brewer. 
-        Failure Diagnosis Using Decision Trees. ICAC, 2004.
+        Failure Diagnosis Using Decision Trees. IEEE International Conference 
+        on Autonomic Computing (ICAC), 2004.
 
 """
 

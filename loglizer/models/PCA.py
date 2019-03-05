@@ -7,7 +7,7 @@ Authors:
 Reference: 
     [1] Wei Xu, Ling Huang, Armando Fox, David Patterson, Michael I. Jordan. 
         Large-Scale System Problems Detection by Mining Console Logs. ACM 
-        Symposium on Operating Systems Principles, 2009.
+        Symposium on Operating Systems Principles (SOSP), 2009.
 
 """
 
@@ -16,22 +16,12 @@ from ..utils import metrics
 
 class PCA(object):
 
-    def __init__(self):
+    def __init__(self, n_components=0.95, threshold=None, c_alpha=3.2905):
         """ The PCA model for anomaly detection
 
         Attributes
         ----------
             proj_C: The projection matrix for projecting feature vector to abnormal space
-            threshold: float, the anomaly detection threshold
-        """
-
-        self.proj_C = None
-        self.threshold = None
-
-    def fit(self, X, n_components=0.95, threshold=None, c_alpha=3.2905):
-        """
-        Auguments
-        ---------
             n_components: float/int, number of principal compnents or the variance ratio they cover
             threshold: float, the anomaly detection threshold. When setting to None, the threshold 
                 is automatically caculated using Q-statistics
@@ -48,10 +38,24 @@ class PCA(object):
                 c_alpha = 4.4172;  # alpha = 0.00001
         """
 
+        self.proj_C = None
+        self.n_components = n_components
+        self.threshold = threshold
+        self.c_alpha = c_alpha
+
+
+    def fit(self, X):
+        """
+        Auguments
+        ---------
+            X: ndarray, the event count matrix of shape num_instances-by-num_events
+        """
+
         print('====== Model summary ======')
         num_instances, num_events = X.shape
         X_cov = np.dot(X.T, X) / float(num_instances)
         U, sigma, V = np.linalg.svd(X_cov)
+        n_components = self.n_components
         if n_components < 1:
             total_variance = np.sum(sigma)
             variance = 0
@@ -67,7 +71,6 @@ class PCA(object):
         print('n_components: {}'.format(n_components))
         print('Project matrix shape: {}-by-{}'.format(self.proj_C.shape[0], self.proj_C.shape[1]))
 
-        self.threshold = threshold
         if not self.threshold:
             # Calculate threshold using Q-statistic. Information can be found at:
             # http://conferences.sigcomm.org/sigcomm/2004/papers/p405-lakhina111.pdf
@@ -76,7 +79,7 @@ class PCA(object):
                 for j in range(n_components, num_events):
                     phi[i] += np.power(sigma[j], i + 1)
             h0 = 1.0 - 2 * phi[0] * phi[2] / (3.0 * phi[1] * phi[1])
-            self.threshold = phi[0] * np.power(c_alpha * np.sqrt(2 * phi[1] * h0 * h0) / phi[0]
+            self.threshold = phi[0] * np.power(self.c_alpha * np.sqrt(2 * phi[1] * h0 * h0) / phi[0]
                                                + 1.0 + phi[1] * h0 * (h0 - 1) / (phi[0] * phi[0]), 
                                                1.0 / h0)
         print('SPE threshold: {}\n'.format(self.threshold))
