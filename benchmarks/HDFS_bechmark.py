@@ -7,7 +7,7 @@ import pandas as pd
 from loglizer.models import *
 from loglizer import dataloader, preprocessing
 
-run_models = ['LogClustering']#'PCA', 'InvariantsMiner', 'LogClustering', 'LR', 'SVM', 'DecisionTree']
+run_models = ['LR', 'SVM', 'DecisionTree', 'PCA', 'InvariantsMiner', 'LogClustering']
 struct_log = '../data/HDFS/HDFS.npz' # The benchmark dataset
 
 if __name__ == '__main__':
