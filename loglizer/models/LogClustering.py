@@ -28,11 +28,12 @@ class LogClustering(object):
         ----------
             max_dist: float, the threshold to stop the clustering process
             anomaly_threshold: float, the threshold for anomaly detection
-            model: str, 'offline' or 'online' mode for clustering
+            mode: str, 'offline' or 'online' mode for clustering
             num_bootstrap_samples: int, online clustering starts with a bootstraping process, which
                 determines the initial cluster representatives offline using a subset of samples 
             representatives: ndarray, the representative samples of clusters, of shape 
                 num_clusters-by-num_events
+            cluster_size_dict: dict, the size of each cluster, used to update representatives online 
         """
         self.max_dist = max_dist
         self.anomaly_threshold = anomaly_threshold
