@@ -9,9 +9,7 @@
   
 
 Logs are imperative in the development and maintenance process of many software systems. They record detailed
-runtime information during system operation that allows developers and support engineers to monitor their systems and dissect anomalous behaviors and errors. Loglizer provides a tool that implements a set of machine-learning based log analysis techniques for automated anomaly detection. 
-
-:telescope: **News: We have updated the hands-on demo for code readability by 2019/02/18.**
+runtime information during system operation that allows developers and support engineers to monitor their systems and track abnormal behaviors and errors. Loglizer provides a toolkit that implements a number of machine-learning based log analysis techniques for automated anomaly detection. 
 
 :telescope: If you use loglizer in your research for publication, please kindly cite the following paper.
 + Shilin He, Jieming Zhu, Pinjia He, Michael R. Lyu. [Experience Report: System Log Analysis for Anomaly Detection](https://jiemingzhu.github.io/pub/slhe_issre2016.pdf), *IEEE International Symposium on Software Reliability Engineering (ISSRE)*, 2016. [[Bibtex](https://dblp.org/rec/bibtex/conf/issre/HeZHL16)][[中文版本](https://github.com/AmateurEvents/article/issues/2)]
