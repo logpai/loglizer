@@ -41,6 +41,7 @@ $ python PCA_demo.py
 $ python InvariantsMiner_demo.py
 
 # If you want to apply loglizer to your own log data, and even have no label data, you can follow the following script to run an unsupervised anomaly detection model. 
-$ python PCA_demo_without_label.py
+$ python PCA_demo_without_labels.py
+$ python InvariantsMiner_demo_without_labels.py
 ```
 
