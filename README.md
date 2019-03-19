@@ -50,8 +50,30 @@ Anomaly detection models currently available:
 ## Log data
 We have collected a set of labeled log datasets in [loghub](https://github.com/logpai/loghub) for research purposes. If you are interested in the datasets, please follow the link to submit your access request.
 
-## Demo
-Please follow [the demo](./docs/demo.md) in the docs to get started.
+## API usage
+
+```python
+# Load HDFS dataset. If you would like to try your own log, you need to rewrite the load function.
+(x_train, y_train), (x_test, y_test) = dataloader.load_HDFS(...)
+
+# Feature extraction and transformation
+feature_extractor = preprocessing.FeatureExtractor()
+feature_extractor.fit_transform(...) # fit and transform features
+
+# Model training
+model = PCA()
+model.fit(...)
+
+# Model evaluation with labeled data
+x_test = feature_extractor.transform(...) # feature transform after fitting
+model.evaluate(...)
+
+# Anomaly prediction
+x_test = feature_extractor.transform(...)
+model.predict(): predict anomalies on given data
+```
+
+For more details, please follow [the demo](./docs/demo.md) in the docs to get started.
 
 ## Benchmarking results
 |       |            | HDFS |     |
