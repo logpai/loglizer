@@ -15,29 +15,8 @@ import sys
 from sklearn.utils import shuffle
 from collections import OrderedDict
 
-
-def load_HDFS(log_file, label_file=None, window='session', train_ratio=0.5, save_csv=False):
-    """ Load HDFS structured log into train and test data
-
-    Arguments
-    ---------
-        log_file: str, the file path of structured log.
-        label_file: str, the file path of anomaly labels, None for unlabeled data
-        window: str, the window options including `session` (default).
-        train_ratio: float, the ratio of training data for train/test split.
-
-    Returns
-    -------
-        (x_train, y_train): the training data
-        (x_test, y_test): the testing data
-    """
-
-    print('====== Input data summary ======')
-
-    if log_file.endswith('.npz'):
-        data = np.load(log_file)
-        x_data = data['x_data']
-        y_data = data['y_data']
+def _split_data(x_data, y_data=None, train_ratio=0, split_type='uniform'):
+    if split_type == 'uniform' and y_data is not None:
         pos_idx = y_data > 0
         x_pos = x_data[pos_idx]
         y_pos = y_data[pos_idx]
@@ -49,9 +28,55 @@ def load_HDFS(log_file, label_file=None, window='session', train_ratio=0.5, save
         y_train = np.hstack([y_pos[0:train_pos], y_neg[0:train_neg]])
         x_test = np.hstack([x_pos[train_pos:], x_neg[train_neg:]])
         y_test = np.hstack([y_pos[train_pos:], y_neg[train_neg:]])
+    elif split_type == 'sequential':
+        num_train = int(train_ratio * x_data.shape[0])
+        x_train = x_data[0:num_train]
+        x_test = x_data[num_train:]
+        if y_data is None:
+            y_train = None
+            y_test = None
+        else:
+            y_train = y_data[0:num_train]
+            y_test = y_data[num_train:]
+    # Random shuffle
+    indexes = shuffle(np.arange(x_train.shape[0]))
+    x_train = x_train[indexes]
+    if y_train is not None:
+        y_train = y_train[indexes]
+    return (x_train, y_train), (x_test, y_test)
+
+def load_HDFS(log_file, label_file=None, window='session', train_ratio=0.5, split_type='sequential',
+    save_csv=False):
+    """ Load HDFS structured log into train and test data
+
+    Arguments
+    ---------
+        log_file: str, the file path of structured log.
+        label_file: str, the file path of anomaly labels, None for unlabeled data
+        window: str, the window options including `session` (default).
+        train_ratio: float, the ratio of training data for train/test split.
+        split_type: `uniform` or `sequential`, which determines how to split dataset. `uniform` means
+            to split positive samples and negative samples equally when setting label_file. `sequential`
+            means to split the data sequentially without label_file. That is, the first part is for training,
+            while the second part is for testing.
+
+    Returns
+    -------
+        (x_train, y_train): the training data
+        (x_test, y_test): the testing data
+    """
+
+    print('====== Input data summary ======')
+
+    if log_file.endswith('.npz'):
+        # Split training and validation set in a class-uniform way
+        data = np.load(log_file)
+        x_data = data['x_data']
+        y_data = data['y_data']
+        (x_train, y_train), (x_test, y_test) = _split_data(x_data, y_data, train_ratio, split_type)
 
     elif log_file.endswith('.csv'):
-        assert window == 'session', "Only window=`session` is supported for HDFS dataset."
+        assert window == 'session', "Only window=session is supported for HDFS dataset."
         struct_log = pd.read_csv(log_file, engine='c', na_filter=False, memory_map=True)
         data_dict = OrderedDict()
         for idx, row in struct_log.iterrows():
@@ -64,32 +89,32 @@ def load_HDFS(log_file, label_file=None, window='session', train_ratio=0.5, save
         data_df = pd.DataFrame(list(data_dict.items()), columns=['BlockId', 'EventSequence'])
 
         if label_file:
+            # Split training and validation set in a class-uniform way
             label_data = pd.read_csv(label_file, engine='c', na_filter=False, memory_map=True)
             label_data = label_data.set_index('BlockId')
             label_dict = label_data['Label'].to_dict()
             data_df['Label'] = data_df['BlockId'].apply(lambda x: 1 if label_dict[x] == 'Anomaly' else 0)
 
             # Split train and test data
-            pos_data = data_df[data_df['Label'] == 1].reset_index()
-            neg_data = data_df[data_df['Label'] == 0].reset_index()
-            num_train_pos = int(len(pos_data) * train_ratio)
-            num_train_neg = int(len(neg_data) * train_ratio)
-            train_data = pd.concat([pos_data.loc[:num_train_pos - 1, :], neg_data.loc[:num_train_neg - 1, :]])
-            train_data = shuffle(train_data)
-            test_data = pd.concat([pos_data.loc[num_train_pos:, :], neg_data.loc[num_train_neg:, :]])
+            (x_train, y_train), (x_test, y_test) = _split_data(data_df['EventSequence'].values, 
+                data_df['Label'].values, train_ratio, split_type)
 
-            (x_train, y_train)  = (train_data['EventSequence'].values, train_data['Label'].values)
-            (x_test, y_test) = (test_data['EventSequence'].values, test_data['Label'].values)
-        
         if save_csv:
             data_df.to_csv('data_instances.csv', index=False)
 
         if not label_file:
-            print('Total: {} instances'.format(len(data_df)))
+            if split_type == 'uniform':
+                split_type = 'sequential'
+                print('Warning: Only split_type=sequential is supported \
+                if label_file=None.'.format(split_type))
+            # Split training and validation set sequentially
             x_data = data_df['EventSequence'].values
-            return (x_data, None), (None, None)
+            (x_train, _), (x_test, _) = _split_data(x_data, train_ratio=train_ratio, split_type=split_type)
+            print('Total: {} instances, train: {} instances, test: {} instances'.format(
+                  x_data.shape[0], x_train.shape[0], x_test.shape[0]))
+            return (x_data, None), (x_test, None)
     else:
-        raise NotImplementedError('load_HDFS only support csv and npz files!')
+        raise NotImplementedError('load_HDFS() only support csv and npz files!')
 
     num_train = x_train.shape[0]
     num_test = x_test.shape[0]

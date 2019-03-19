@@ -13,7 +13,8 @@ if __name__ == '__main__':
     (x_train, y_train), (x_test, y_test) = dataloader.load_HDFS(struct_log,
                                                                 label_file=label_file,
                                                                 window='session', 
-                                                                train_ratio=0.5)
+                                                                train_ratio=0.5,
+                                                                split_type='uniform')
 
     feature_extractor = preprocessing.FeatureExtractor()
     x_train = feature_extractor.fit_transform(x_train, term_weighting='tf-idf')

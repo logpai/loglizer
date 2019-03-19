@@ -12,7 +12,9 @@ struct_log = '../data/HDFS/HDFS.npz' # The benchmark dataset
 
 if __name__ == '__main__':
     (x_tr, y_train), (x_te, y_test) = dataloader.load_HDFS(struct_log,
-                                                           train_ratio=0.5)
+                                                           window='session', 
+                                                           train_ratio=0.5,
+                                                           split_type='uniform')
     benchmark_results = []
     for _model in run_models:
         print('Evaluating {} on HDFS:'.format(_model))
