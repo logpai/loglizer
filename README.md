@@ -58,14 +58,15 @@ We have collected a set of labeled log datasets in [loghub](https://github.com/l
 
 # Feature extraction and transformation
 feature_extractor = preprocessing.FeatureExtractor()
-feature_extractor.fit_transform(...) # fit and transform features
+feature_extractor.fit_transform(...) 
 
 # Model training
 model = PCA()
 model.fit(...)
 
+# Feature transform after fitting
+x_test = feature_extractor.transform(...)
 # Model evaluation with labeled data
-x_test = feature_extractor.transform(...) # feature transform after fitting
 model.evaluate(...)
 
 # Anomaly prediction
