@@ -15,7 +15,7 @@ if __name__ == '__main__':
                                                                 label_file=label_file,
                                                                 window='session', 
                                                                 train_ratio=0.5,
-                                                                split_type='uniform')
+                                                                split_type='sequential')
     feature_extractor = preprocessing.FeatureExtractor()
     x_train = feature_extractor.fit_transform(x_train)
     x_test = feature_extractor.transform(x_test)
