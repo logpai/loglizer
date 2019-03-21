@@ -39,7 +39,7 @@ Anomaly detection models currently available:
 | **Unsupervised models** |
 | LOF (coming)| [**SIGMOD'00**] [LOF: Identifying Density-Based Local Outliers](), by Markus M. Breunig, Hans-Peter Kriegel, Raymond T. Ng, Jörg Sander. |
 | One-Class SVM (coming)| [**Neural Computation'01**] [Estimating the Support of a High-Dimensional Distribution](), by John Platt, Bernhard Schölkopf, John Shawe-Taylor, Alex J. Smola, Robert C. Williamson. |
-| Isolation Forest (coming)| [**ICDM'08**] [Isolation Forest](https://cs.nju.edu.cn/zhouzh/zhouzh.files/publication/icdm08b.pdf), by Fei Tony Liu, Kai Ming Ting, Zhi-Hua Zhou. |
+| Isolation Forest | [**ICDM'08**] [Isolation Forest](https://cs.nju.edu.cn/zhouzh/zhouzh.files/publication/icdm08b.pdf), by Fei Tony Liu, Kai Ming Ting, Zhi-Hua Zhou. |
 | PCA | [**SOSP'09**] [Large-Scale System Problems Detection by Mining Console Logs](http://iiis.tsinghua.edu.cn/~weixu/files/sosp09.pdf), by Wei Xu, Ling Huang, Armando Fox, David Patterson, Michael I. Jordan. [**Intel**] |
 | Invariants Mining | [**ATC'10**] [Mining Invariants from Console Logs for System Problem Detection](https://www.usenix.org/legacy/event/atc10/tech/full_papers/Lou.pdf), by Jian-Guang Lou, Qiang Fu, Shengqi Yang, Ye Xu, Jiang Li. [**Microsoft**]|
 | Clustering | [**ICSE'16**] [Log Clustering based Problem Identification for Online Service Systems](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/07/ICSE-2016-2-Log-Clustering-based-Problem-Identification-for-Online-Service-Systems.pdf), by Qingwei Lin, Hongyu Zhang, Jian-Guang Lou, Yu Zhang, Xuewei Chen. [**Microsoft**]|
@@ -83,10 +83,10 @@ For more details, please follow [the demo](./docs/demo.md) in the docs to get st
 | LR| 0.955 |	0.911 |	0.933 |
 | Decision Tree | 0.998 |	0.998 |	0.998 |
 | SVM| 0.959 |	0.970 |	0.965 |
-| Clustering | 1.000 | 0.720 | 0.837 |
+| Isolation Forest |  0.830 | 0.776 | 0.802 |
 | PCA | 0.975 | 0.635 | 0.769|
 | Invariants Mining | 0.888 | 0.945 | 0.915|
-
+| Clustering | 1.000 | 0.720 | 0.837 |
 
 ## Contributors
 + [Shilin He](https://shilinhe.github.io), The Chinese University of Hong Kong

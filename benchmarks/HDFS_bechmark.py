@@ -7,7 +7,8 @@ import pandas as pd
 from loglizer.models import *
 from loglizer import dataloader, preprocessing
 
-run_models = ['LR', 'SVM', 'DecisionTree', 'PCA', 'InvariantsMiner', 'LogClustering']
+run_models = ['PCA', 'InvariantsMiner', 'LogClustering', 'IsolationForest', 'LR', 
+              'SVM', 'DecisionTree']
 struct_log = '../data/HDFS/HDFS.npz' # The benchmark dataset
 
 if __name__ == '__main__':
@@ -37,6 +38,13 @@ if __name__ == '__main__':
             model = LogClustering(max_dist=0.3, anomaly_threshold=0.3)
             model.fit(x_train[y_train == 0, :]) # Use only normal samples for training
 
+        elif _model == 'IsolationForest':
+            feature_extractor = preprocessing.FeatureExtractor()
+            x_train = feature_extractor.fit_transform(x_tr)
+            model = IsolationForest(random_state=2019, max_samples=0.9999, contamination=0.03, 
+                                    n_jobs=4)
+            model.fit(x_train)
+
         elif _model == 'LR':
             feature_extractor = preprocessing.FeatureExtractor()
             x_train = feature_extractor.fit_transform(x_tr, term_weighting='tf-idf')
@@ -56,10 +64,10 @@ if __name__ == '__main__':
             model.fit(x_train, y_train)
         
         x_test = feature_extractor.transform(x_te)
-        print('Train:')
+        print('Train accuracy:')
         precision, recall, f1 = model.evaluate(x_train, y_train)
         benchmark_results.append([_model + '-train', precision, recall, f1])
-        print('Test:')
+        print('Test accuracy:')
         precision, recall, f1 = model.evaluate(x_test, y_test)
         benchmark_results.append([_model + '-test', precision, recall, f1])
 

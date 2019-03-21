@@ -17,7 +17,7 @@ from ..utils import metrics
 
 class SVM(object):
 
-    def __init__(self, penalty='l1', tol=0.01, C=1, dual=False, class_weight=None, 
+    def __init__(self, penalty='l1', tol=0.1, C=1, dual=False, class_weight=None, 
                  max_iter=100):
         """ The Invariants Mining model for anomaly detection
         Arguments
@@ -53,7 +53,7 @@ class SVM(object):
             y_pred: ndarray, the predicted label vector of shape (num_instances,)
         """
         
-        y_pred = list(self.classifier.predict(X))
+        y_pred = self.classifier.predict(X)
         return y_pred
 
     def evaluate(self, X, y_true):

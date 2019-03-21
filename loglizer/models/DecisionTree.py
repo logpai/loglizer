@@ -52,7 +52,7 @@ class DecisionTree(object):
             y_pred: ndarray, the predicted label vector of shape (num_instances,)
         """
         
-        y_pred = list(self.classifier.predict(X))
+        y_pred = self.classifier.predict(X)
         return y_pred
 
     def evaluate(self, X, y_true):
