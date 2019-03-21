@@ -7,7 +7,7 @@ The loglizer toolkit is implemented with Python and requires a number of depende
 + python 3.6
 + scipy
 + numpy
-+ scikit-learn
++ scikit-learn=0.20.3
 + pandas
 
 We recommend users to use Anaconda, which is a popular Python data science platform with many common packages pre-installed. The virtual enviorment can be set up via `conda`:
