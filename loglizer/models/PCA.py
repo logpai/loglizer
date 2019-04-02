@@ -39,6 +39,7 @@ class PCA(object):
         """
 
         self.proj_C = None
+        self.components = None
         self.n_components = n_components
         self.threshold = threshold
         self.c_alpha = c_alpha
@@ -67,6 +68,7 @@ class PCA(object):
 
         P = U[:, :n_components]
         I = np.identity(num_events, int)
+        self.components = P
         self.proj_C = I - np.dot(P, P.T)
         print('n_components: {}'.format(n_components))
         print('Project matrix shape: {}-by-{}'.format(self.proj_C.shape[0], self.proj_C.shape[1]))
