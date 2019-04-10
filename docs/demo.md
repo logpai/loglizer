@@ -22,7 +22,7 @@ For ease of reproducing our benchmarking results, we have also built a docker im
 ```
 $ mkdir loglizer
 $ git clone https://github.com/logpai/loglizer.git loglizer/
-$ docker run --name loglizer -it -v loglizer:/loglizer logpai/anaconda:py3.6 bash
+$ docker run --name loglizer -v loglizer:/loglizer -it logpai/anaconda:py3.6 bash
 $ cd /loglizer/demo
 ```
 
@@ -40,7 +40,8 @@ $ python PCA_demo.py
 # Or run InvariantsMiner demo
 $ python InvariantsMiner_demo.py
 
-# If you want to apply loglizer to your own log data, and even have no label data, you can follow the following script to run an unsupervised anomaly detection model. 
+# If you want to apply loglizer to your own log data, and even have no label data, 
+# you can follow the following script to run an unsupervised anomaly detection model. 
 $ python PCA_demo_without_labels.py
 $ python InvariantsMiner_demo_without_labels.py
 ```
