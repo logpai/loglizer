@@ -102,7 +102,7 @@ def load_HDFS(log_file, label_file=None, window='session', train_ratio=0.5, spli
         if save_csv:
             data_df.to_csv('data_instances.csv', index=False)
 
-        if not label_file:
+        if label_file is None:
             if split_type == 'uniform':
                 split_type = 'sequential'
                 print('Warning: Only split_type=sequential is supported \
@@ -112,7 +112,7 @@ def load_HDFS(log_file, label_file=None, window='session', train_ratio=0.5, spli
             (x_train, _), (x_test, _) = _split_data(x_data, train_ratio=train_ratio, split_type=split_type)
             print('Total: {} instances, train: {} instances, test: {} instances'.format(
                   x_data.shape[0], x_train.shape[0], x_test.shape[0]))
-            return (x_data, None), (x_test, None)
+            return (x_train, None), (x_test, None)
     else:
         raise NotImplementedError('load_HDFS() only support csv and npz files!')
 
