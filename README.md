@@ -50,6 +50,11 @@ Anomaly detection models currently available:
 ## Log data
 We have collected a set of labeled log datasets in [loghub](https://github.com/logpai/loghub) for research purposes. If you are interested in the datasets, please follow the link to submit your access request.
 
+## Install
+git clone https://github.com/logpai/loglizer.git
+cd loglizer
+pip -r install requirements.txt
+
 ## API usage
 
 ```python
@@ -76,7 +81,8 @@ model.predict(): predict anomalies on given data
 
 For more details, please follow [the demo](./docs/demo.md) in the docs to get started.
 
-## Benchmarking results
+## Benchmarking results 
+(Evaluated on the fUll HDFS dataset instead of HDFS100k demo data)
 |       |            | HDFS |     |
 | :----:|:----:|:----:|:----:|
 | **Model** | **Precision** | **Recall** | **F1** |
