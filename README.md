@@ -51,9 +51,11 @@ Anomaly detection models currently available:
 We have collected a set of labeled log datasets in [loghub](https://github.com/logpai/loghub) for research purposes. If you are interested in the datasets, please follow the link to submit your access request.
 
 ## Install
+```bash
 git clone https://github.com/logpai/loglizer.git
 cd loglizer
-pip -r install requirements.txt
+pip install -r requirements.txt
+```
 
 ## API usage
 
