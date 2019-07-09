@@ -84,7 +84,9 @@ model.predict(): predict anomalies on given data
 For more details, please follow [the demo](./docs/demo.md) in the docs to get started.
 
 ## Benchmarking results 
-(Evaluated on the fUll HDFS dataset instead of HDFS100k demo data)
+
+(Evaluated on the full HDFS dataset instead of the HDFS100k demo data)
+
 |       |            | HDFS |     |
 | :----:|:----:|:----:|:----:|
 | **Model** | **Precision** | **Recall** | **F1** |
