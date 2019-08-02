@@ -78,14 +78,14 @@ model.evaluate(...)
 
 # Anomaly prediction
 x_test = feature_extractor.transform(...)
-model.predict(): predict anomalies on given data
+model.predict(...) # predict anomalies on given data
 ```
 
 For more details, please follow [the demo](./docs/demo.md) in the docs to get started.
 
 ## Benchmarking results 
 
-(Evaluated on the full HDFS dataset instead of the HDFS100k demo data)
+If you would like to reproduce the following results, please run [benchmarks/HDFS_bechmark.py](./benchmarks/HDFS_bechmark.py) on the full HDFS dataset (HDFS100k is for demo only).
 
 |       |            | HDFS |     |
 | :----:|:----:|:----:|:----:|
