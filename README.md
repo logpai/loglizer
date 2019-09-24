@@ -81,7 +81,7 @@ x_test = feature_extractor.transform(...)
 model.predict(...) # predict anomalies on given data
 ```
 
-For more details, please follow [the demo](./docs/demo.md) in the docs to get started.
+For more details, please follow [the demo](./docs/demo.md) in the docs to get started. Please note that all ML models are not magic, you need to figure out how to tune the parameters in order to make them work on your own data. 
 
 ## Benchmarking results 
 
