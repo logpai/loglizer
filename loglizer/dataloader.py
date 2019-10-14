@@ -350,9 +350,10 @@ def Linux_preprocess_data(para, raw_data, event_mapping_data):
     start_end_index_list = [] # list of tuples, tuple contains two number, which represent the start and end of sliding time window
     # get the list of label data and the list of time data
     time_data = raw_data
-
+    print("the time_data is:", time_data)
     if not os.path.exists(sliding_file_path):
         start_time = time_data[0]
+        print("the start_time is:",start_time)
         start_index = 0
         end_index = 0
         # finish the comparision in one roll with window_size
@@ -364,7 +365,8 @@ def Linux_preprocess_data(para, raw_data, event_mapping_data):
                 start_end_pair = tuple((start_index, end_index))
                 start_end_index_list.append(start_end_pair)
                 break
-        # sliding the block and change the index of start and end
+    
+    # sliding the block and change the index of start and end
         while end_index < log_size:
             # add the sliding size to start time
             start_time = start_time + para['step_size']*3600
@@ -424,7 +426,6 @@ def Linux_preprocess_data(para, raw_data, event_mapping_data):
             event_count_matrix[j, event_index] += 1
 
     return event_count_matrix
-
 
 
 
