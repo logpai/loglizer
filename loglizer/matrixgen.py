@@ -5,6 +5,7 @@ from collections import Counter
 import re
 from dataloader import *
 import joblib
+import optparse
 
 # function to transform hours and minutes to seconds
 def trans_seconds(time_list):
@@ -81,46 +82,90 @@ if __name__ == "__main__":
 
     # define the window_size and step_size to get time sequence
     para = {}
-    para['save_path'] = '../../Dataset_ML/Linux'
-    para['window_size'] = 24 # 24 hours ---- one day
-    para['step_size'] = 3 # 3 hours
+    para['save_path'] = '../../Dataset_ML/Linux/Client/Client_train/'
+    para['window_size'] = 0.5 # 24 hours ---- one day
+    para['step_size'] = 0.2 # 3 hours
 
-    # =============================== generate the event matrix for normal linux logs =========================
+    # =============================== generate the event matrix for norcom linux logs =========================
+
+    # set the format of command input
+    parser = optparse.OptionParser('usage %prog --p1 <structured log filename for training data> \
+                                    --p2 <dict_filename> --p3 <structured id log filename for training data> --p4 <transformed matrix for training> \
+                                    --p5 <structured log filename for testing data> --p6 <dict_filename_com> --p7 <structured id log filename for testing data> \
+                                    --p8 <transformed matrix for testing>')
+    # set the elements for every parameter
+    parser.add_option('--p1', dest='structured_log_filename', type='string', help='Please input the structured log filename: ')
+    parser.add_option('--p2', dest='dict_filename', type='string', help='Please input the dict filename for training data: ')
+    parser.add_option('--p3', dest='structured_log_id_filename', type='string', help='Please input the structured log id filename: ')
+    parser.add_option('--p4', dest='matrix', type='string', help='Please input the location where you want to save the matrix: ')
+    parser.add_option('--p5', dest='structured_log_com_filename', type='string', help='Please input the coming structured log filename: ')
+    parser.add_option('--p6', dest='dict_filename_com', type='string', help='Please input the dict filename for testing data')
+    parser.add_option('--p7', dest='structured_log_id_com_filename', type='string', help='Please input the coming structured log id filename: ')
+    parser.add_option('--p8', dest='matrix_com', type='string', help='Please input the location where you want to save the coming matrix: ')
+
+
+    # parser arguments through the parse_args()
+    (options, args) = parser.parse_args()
+    # get the values from options
+    structured_log_filename = options.structured_log_filename
+    dict_filename = options.dict_filename
+    structured_log_id_filename = options.structured_log_id_filename
+    matrix = options.matrix
+    structured_log_com_filename = options.structured_log_com_filename
+    dict_filename_com = options.dict_filename_com
+    structured_log_id_com_filename = options.structured_log_id_com_filename
+    matrix_com = options.matrix_com
+
     # get the linux dataframe
-    fd_linux = pd.read_csv('../../Dataset_ML/Linux_2k.log_structured.csv')
+    fd_linux = pd.read_csv(structured_log_filename)
     # make a copy to avoid modifying the original data
     fd_linux = fd_linux.copy()
 
-    filename = '../../Dataset_ML/Linux_matrix/Event_dict.pkl'
-    # check whether the event_dict has existed
-    if os.path.isfile(filename):
-        event_map = joblib.load(filename)
+    # dict_filename has been given by parser
+    # check whether the dict_filename has existed
+    if os.path.isfile(dict_filename):
+        event_map = joblib.load(dict_filename)
     else:
-        event_map = Event_Convert(fd_linux, filename)
+        event_map = Event_Convert(fd_linux, dict_filename)
+    # shift the key and value of the dict
+    event_map = {val: key for (key, val) in event_map.items()}
+    
+    #for i in range(len(fd_linux['EventId'])):
+     #   for key, value in event_map.items():
+      #      # print("the key {} and value {}".format(key,  value))
+        #    if fd_linux['EventId'][i] == value:
+       #         # replace the hashed eventId into format like numerical id
+         #       fd_linux.is_copy = False
+          #      fd_linux['EventId'][i] = key
+           #     print("the replace eventId is:", fd_linux['EventId'][i])
+    
 
-    for i in range(len(fd_linux['EventId'])):
-        for key, value in event_map.items():
-            fd_linux.is_copy = False
-            if fd_linux['EventId'][i] == value:
-                fd_linux['EventId'][i] = key
+    #fd_linux['EventId'].map(event_map).fillna(fd_linux['EventId'])
+    fd_linux['EventId'] = fd_linux['EventId'].map(event_map)
 
-    fd_linux.to_csv('../../Dataset_ML/Linux_2k.log_structured_id.csv', index=0)
-
-    fd_linux_id = pd.read_csv('../../Dataset_ML/Linux_2k.log_structured_id.csv')
-    fd_linux_id = fd_linux_id.copy()
-
+    # structured_log_id_filename has been generated above
+    
+    
+    fd_linux.to_csv(structured_log_id_filename, index = False)
+    # read the saved csv
+    fd_linux_id = pd.read_csv(structured_log_id_filename)
+    # sort the dataframe from time increasing order
+    fd_linux_id_sort = fd_linux_id.copy()
+    fd_linux_id_sort.sort_index(axis=0, ascending=False, inplace=True)
+    # reset the index
+    fd_linux_id_sort = fd_linux_id_sort.reset_index(drop = True)
+    print(fd_linux_id_sort.head())
     # part to transform the month, date, time into seconds
-    month_list, time_list, day_list, day_list = [], [], [],[]
+    month_list, time_list, day_list, day_list = [], [], [], []
 
-    for i in range(len(fd_linux_id['Time'])):
-        time_list.append(fd_linux_id['Time'][i].split(':'))
-    for j in range(len(fd_linux_id['Date'])):
-        day_list.append(fd_linux_id['Date'][j])
+    for i in range(len(fd_linux_id_sort['Time'])):
+        time_list.append(fd_linux_id_sort['Time'][i].split(':'))
+    for j in range(len(fd_linux_id_sort['Date'])):
+        day_list.append(fd_linux_id_sort['Date'][j])
 
     month_number = 0
-    for k in range(len(fd_linux_id['Month'])):
-        # print("we are transferring the month:",fd_linux['Month'][k])
-        month_number = month_string_to_number(fd_linux_id['Month'][k])
+    for k in range(len(fd_linux_id_sort['Month'])):
+        month_number = month_string_to_number(fd_linux_id_sort['Month'][k])
         month_list.append(month_number)
 
     seconds_list = trans_seconds(month_list, day_list, time_list)
@@ -130,6 +175,7 @@ if __name__ == "__main__":
     event_mapping_data = []
     Event_ids = []
     # get the digits part of eventID
+
     Event_ids = [int(x) for x in fd_linux_id['EventId']]
 
     for id, log in zip(Event_ids, fd_linux_id['EventTemplate']):
@@ -140,69 +186,76 @@ if __name__ == "__main__":
     event_count_matrix = Linux_preprocess_data(para, raw_data, event_mapping_data)
     # print("the event_count_matrix is:", Counter(event_count_matrix[9]))
     print("the event_count_matrix is:", event_count_matrix)
-    matrix = '../../Dataset_ML/Linux_matrix/log_matrix.npy'
+    # matrix path has been generated above
     np.save(matrix, event_count_matrix)
-    # np.load(matrix+'.npy')
 
 
-    # =============================== generate the event matrix for malicious linux logs =========================
 
-    para_mal = {}
-    para_mal['save_path'] = '../../Dataset_ML/Linux_mal'
-    para_mal['window_size'] = 24  # 24 hours ---- one day
-    para_mal['step_size'] = 3  # 3 hours
+    # =============================== generate the event matrix for comicious linux logs =========================
 
-    fd_linux_mali = pd.read_csv('../../Dataset_ML/malicious_linux.log_structured.csv')
-    fd_linux_mali = fd_linux_mali.copy()
+    para_com = {}
+    para_com['save_path'] = '../../Dataset_ML/Linux/Client/Client_com/'
+    para_com['window_size'] = 24  # 24 hours ---- one day
+    para_com['step_size'] = 3  # 3 hours
 
-    filename_mali = '../../Dataset_ML/Linux_mal_matrix/Event_mal_dict.pkl'
-    # check whether the event_dict has existed
-    if os.path.isfile(filename_mali):
-        event_map_mal = joblib.load(filename_mali)
+    # structured_log_com_filename has been give by parser
+    fd_linux_com = pd.read_csv(structured_log_com_filename)
+    fd_linux_com = fd_linux_com.copy()
+
+    # dict_filename_com has been given by parser
+    # check whether the dict_filename_com has existed
+    if os.path.isfile(dict_filename_com):
+        event_map_com = joblib.load(dict_filename_com)
     else:
-        event_map_mal = Event_Convert(fd_linux_mali, filename_mali)
+        event_map_com = Event_Convert(fd_linux_com, dict_filename_com)
 
-    for i in range(len(fd_linux_mali['EventId'])):
-        for key, value in event_map_mal.items():
-            fd_linux_mali.is_copy = False
-            if fd_linux_mali['EventId'][i] == value:
-                fd_linux_mali['EventId'][i] = key
+    for i in range(len(fd_linux_com['EventId'])):
+        for key, value in event_map_com.items():
+            fd_linux_com.is_copy = False
+            if fd_linux_com['EventId'][i] == value:
+                fd_linux_com['EventId'][i] = key
 
-    fd_linux_mali.to_csv('../../Dataset_ML/malicious_linux.log_structured_id.csv', index=0)
+    # structured_log_com_filename
+    fd_linux_com.to_csv(structured_log_id_com_filename, index=False)
 
-    fd_linux_mali_id = pd.read_csv('../../Dataset_ML/malicious_linux.log_structured_id.csv')
-    fd_linux_mali_id = fd_linux_mali_id.copy()
+    fd_linux_com_id = pd.read_csv(structured_log_id_com_filename)
+    fd_linux_com_id = fd_linux_com_id.copy()
+
+    fd_linux_com_id.sort_index(axis=0, ascending=False, inplace=True)
+
+    fd_linux_com_id = fd_linux_com_id.reset_index(drop = True)
+
+    fd_linux_com_id = fd_linux_com_id.copy()
 
     # part to transform date time into seconds
-    month_list_mal ,time_list_mal, day_list_mal, day_list_mal = [],[],[], []
+    month_list_com ,time_list_com, day_list_com, day_list_com = [],[],[], []
 
-    for i in range(len(fd_linux_mali_id['Time'])):
-        time_list_mal.append(fd_linux_mali_id['Time'][i].split(':'))
-    for j in range(len(fd_linux_mali_id['Date'])):
-        day_list_mal.append(fd_linux_mali_id['Date'][j])
+    for i in range(len(fd_linux_com_id['Time'])):
+        time_list_com.append(fd_linux_com_id['Time'][i].split(':'))
+    for j in range(len(fd_linux_com_id['Date'])):
+        day_list_com.append(fd_linux_com_id['Date'][j])
 
-    month_number_mal = 0
-    for k in range(len(fd_linux_mali_id['Month'])):
+    month_number_com = 0
+    for k in range(len(fd_linux_com_id['Month'])):
         # print("we are transferring the month:",fd_linux['Month'][k])
-        month_number_mal = month_string_to_number(fd_linux_mali_id['Month'][k])
-        month_list_mal.append(month_number_mal)
+        month_number_com = month_string_to_number(fd_linux_com_id['Month'][k])
+        month_list_com.append(month_number_com)
 
-    seconds_list_mal = trans_seconds(month_list_mal, day_list_mal, time_list_mal)
+    seconds_list_com = trans_seconds(month_list_com, day_list_com, time_list_com)
 
-    raw_data_mal = np.array(seconds_list_mal)
+    raw_data_com = np.array(seconds_list_com)
 
-    event_mapping_data_mal = []
-    Event_ids_mal = []
+    event_mapping_data_com = []
+    Event_ids_com = []
     # get the digits part of eventID
-    Event_ids_mal = [int(x) for x in fd_linux_mali_id['EventId']]
+    Event_ids_com = [int(x) for x in fd_linux_com_id['EventId']]
 
-    for id, log in zip(Event_ids_mal, fd_linux_mali_id['EventTemplate']):
-        event_mapping_data_mal.append([id, log])
+    for id, log in zip(Event_ids_com, fd_linux_com_id['EventTemplate']):
+        event_mapping_data_com.append([id, log])
 
 
-    event_count_matrix_mal = Linux_preprocess_data(para_mal, raw_data_mal, event_mapping_data_mal)
+    event_count_matrix_com = Linux_preprocess_data(para_com, raw_data_com, event_mapping_data_com)
     # print("the event_count_matrix is:", Counter(event_count_matrix[9]))
-    print("the event_count_matrix is:", event_count_matrix_mal)
-    mal_matrix = '../../Dataset_ML/Linux_mal_matrix/mal_matrix.npy'
-    np.save(mal_matrix, event_count_matrix_mal)
-    # np.load(mal_matrix)
+    print("the event_count_matrix is:", event_count_matrix_com)
+    # matrix_com has been given by parser
+    np.save(matrix_com, event_count_matrix_com)
