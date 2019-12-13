@@ -57,6 +57,8 @@ class PCA(object):
         X_cov = np.dot(X.T, X) / float(num_instances)
         U, sigma, V = np.linalg.svd(X_cov)
         n_components = self.n_components
+        
+        num = 0
         if n_components < 1:
             total_variance = np.sum(sigma)
             variance = 0
@@ -64,7 +66,8 @@ class PCA(object):
                 variance += sigma[i]
                 if variance / total_variance >= n_components:
                     break
-            n_components = i + 1
+                num = i    
+            n_components = num + 1
 
         P = U[:, :n_components]
         I = np.identity(num_events, int)
