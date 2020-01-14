@@ -11,7 +11,6 @@ import pandas as pd
 import os
 import numpy as np
 import re
-import sys
 from sklearn.utils import shuffle
 from collections import OrderedDict
 
@@ -45,8 +44,7 @@ def _split_data(x_data, y_data=None, train_ratio=0, split_type='uniform'):
         y_train = y_train[indexes]
     return (x_train, y_train), (x_test, y_test)
 
-def load_HDFS(log_file, label_file=None, window='session', train_ratio=0.5, split_type='sequential',
-    save_csv=False):
+def load_HDFS(log_file, label_file=None, window='session', train_ratio=0.5, split_type='sequential', save_csv=False, window_size=0):
     """ Load HDFS structured log into train and test data
 
     Arguments
@@ -77,7 +75,9 @@ def load_HDFS(log_file, label_file=None, window='session', train_ratio=0.5, spli
 
     elif log_file.endswith('.csv'):
         assert window == 'session', "Only window=session is supported for HDFS dataset."
-        struct_log = pd.read_csv(log_file, engine='c', na_filter=False, memory_map=True)
+        print("Loading", log_file)
+        struct_log = pd.read_csv(log_file, engine='c',
+                na_filter=False, memory_map=True)
         data_dict = OrderedDict()
         for idx, row in struct_log.iterrows():
             blkId_list = re.findall(r'(blk_-?\d+)', row['Content'])
@@ -87,7 +87,7 @@ def load_HDFS(log_file, label_file=None, window='session', train_ratio=0.5, spli
                     data_dict[blk_Id] = []
                 data_dict[blk_Id].append(row['EventId'])
         data_df = pd.DataFrame(list(data_dict.items()), columns=['BlockId', 'EventSequence'])
-
+        
         if label_file:
             # Split training and validation set in a class-uniform way
             label_data = pd.read_csv(label_file, engine='c', na_filter=False, memory_map=True)
@@ -98,9 +98,19 @@ def load_HDFS(log_file, label_file=None, window='session', train_ratio=0.5, spli
             # Split train and test data
             (x_train, y_train), (x_test, y_test) = _split_data(data_df['EventSequence'].values, 
                 data_df['Label'].values, train_ratio, split_type)
+        
+        print(y_train.sum(), y_test.sum())
 
         if save_csv:
             data_df.to_csv('data_instances.csv', index=False)
+
+        if window_size > 0:
+            x_train, window_y_train, y_train = slice_hdfs(x_train, y_train, window_size)
+            x_test, window_y_test, y_test = slice_hdfs(x_test, y_test, window_size)
+            log = "{} {} windows ({}/{} anomaly), {}/{} normal"
+            print(log.format("Train:", x_train.shape[0], y_train.sum(), y_train.shape[0], (1-y_train).sum(), y_train.shape[0]))
+            print(log.format("Test:", x_test.shape[0], y_test.sum(), y_test.shape[0], (1-y_test).sum(), y_test.shape[0]))
+            return (x_train, window_y_train, y_train), (x_test, window_y_test, y_test)
 
         if label_file is None:
             if split_type == 'uniform':
@@ -112,7 +122,7 @@ def load_HDFS(log_file, label_file=None, window='session', train_ratio=0.5, spli
             (x_train, _), (x_test, _) = _split_data(x_data, train_ratio=train_ratio, split_type=split_type)
             print('Total: {} instances, train: {} instances, test: {} instances'.format(
                   x_data.shape[0], x_train.shape[0], x_test.shape[0]))
-            return (x_train, None), (x_test, None)
+            return (x_train, None), (x_test, None), data_df
     else:
         raise NotImplementedError('load_HDFS() only support csv and npz files!')
 
@@ -131,6 +141,25 @@ def load_HDFS(log_file, label_file=None, window='session', train_ratio=0.5, spli
           .format(num_test, num_test_pos, num_test - num_test_pos))
 
     return (x_train, y_train), (x_test, y_test)
+
+def slice_hdfs(x, y, window_size):
+    results_data = []
+    print("Slicing {} sessions, with window {}".format(x.shape[0], window_size))
+    for idx, sequence in enumerate(x):
+        seqlen = len(sequence)
+        i = 0
+        while (i + window_size) < seqlen:
+            slice = sequence[i: i + window_size]
+            results_data.append([idx, slice, sequence[i + window_size], y[idx]])
+            i += 1
+        else:
+            slice = sequence[i: i + window_size]
+            slice += ["#Pad"] * (window_size - len(slice))
+            results_data.append([idx, slice, "#Pad", y[idx]])
+    results_df = pd.DataFrame(results_data, columns=["SessionId", "EventSequence", "Label", "SessionLabel"])
+    print("Slicing done, {} windows generated".format(results_df.shape[0]))
+    return results_df[["SessionId", "EventSequence"]], results_df["Label"], results_df["SessionLabel"]
+
 
 
 def load_BGL(log_file, label_file=None, window='sliding', time_interval=60, stepping_size=60, 

@@ -6,14 +6,44 @@ Authors:
 
 """
 
+
 import pandas as pd
 import os
 import numpy as np
 import re
-import sys
 from collections import Counter
 from scipy.special import expit
 from itertools import compress
+from torch.utils.data import DataLoader, Dataset
+
+class Iterator(Dataset):
+    def __init__(self, data_dict, batch_size=32, shuffle=False, num_workers=1):
+        self.data_dict = data_dict
+        self.keys = list(data_dict.keys())
+        self.iter = DataLoader(dataset=self, batch_size=batch_size, shuffle=shuffle, num_workers=num_workers)
+
+    def __getitem__(self, index):
+        return {k: self.data_dict[k][index] for k in self.keys}
+
+    def __len__(self):
+        return self.data_dict["SessionId"].shape[0]
+
+class Vectorizer(object):
+
+    def fit_transform(self, x_train, window_y_train, y_train):
+        self.label_mapping = {eid: idx for idx, eid in enumerate(window_y_train.unique(), 2)}
+        self.label_mapping["#OOV"] = 0
+        self.label_mapping["#Pad"] = 1
+        self.num_labels = len(self.label_mapping)
+        return self.transform(x_train, window_y_train, y_train)
+
+    def transform(self, x, window_y, y):
+        x["EventSequence"] = x["EventSequence"].map(lambda x: [self.label_mapping.get(item, 0) for item in x])
+        window_y = window_y.map(lambda x: self.label_mapping.get(x, 0))
+        y = y
+        data_dict = {"SessionId": x["SessionId"].values, "window_y": window_y.values, "y": y.values, "x": np.array(x["EventSequence"].tolist())}
+        return data_dict
+        
 
 class FeatureExtractor(object):
 
