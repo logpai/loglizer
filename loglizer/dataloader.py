@@ -99,7 +99,7 @@ def load_HDFS(log_file, label_file=None, window='session', train_ratio=0.5, spli
             (x_train, y_train), (x_test, y_test) = _split_data(data_df['EventSequence'].values, 
                 data_df['Label'].values, train_ratio, split_type)
         
-        print(y_train.sum(), y_test.sum())
+            print(y_train.sum(), y_test.sum())
 
         if save_csv:
             data_df.to_csv('data_instances.csv', index=False)
