@@ -14,7 +14,7 @@ import re
 from sklearn.utils import shuffle
 from collections import OrderedDict
 
-def load_BGL(log_file, window='sliding', time_interval=60, stepping_size=30,
+def loadDataset(log_file, window='sliding', time_interval=60, stepping_size=30,
              train_ratio=0.8):
     """ Read a BGL log file to obtain training and test data.
 
