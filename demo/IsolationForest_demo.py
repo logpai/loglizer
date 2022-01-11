@@ -4,16 +4,17 @@
 import sys
 sys.path.append('../')
 from loglizer.models import IsolationForest
-from loglizer import dataloader, preprocessing
+from loglizer import preprocessing
+from loglizer.dataloader import HDFS
 
 struct_log = '../data/HDFS/HDFS_100k.log_structured.csv' # The structured log file
 label_file = '../data/HDFS/anomaly_label.csv' # The anomaly label file
 anomaly_ratio = 0.03 # Estimate the ratio of anomaly samples in the data
 
 if __name__ == '__main__':
-    (x_train, y_train), (x_test, y_test) = dataloader.load_HDFS(struct_log,
+    (x_train, y_train), (x_test, y_test) = HDFS.loadDataset(struct_log,
                                                                 label_file=label_file,
-                                                                window='session', 
+                                                                window='session',
                                                                 train_ratio=0.5,
                                                                 split_type='uniform')
     feature_extractor = preprocessing.FeatureExtractor()
@@ -25,7 +26,7 @@ if __name__ == '__main__':
 
     print('Train validation:')
     precision, recall, f1 = model.evaluate(x_train, y_train)
-    
+
     print('Test validation:')
     precision, recall, f1 = model.evaluate(x_test, y_test)
 
