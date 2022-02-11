@@ -1,5 +1,5 @@
 """
-The interface to load HDFS log datasets.
+The interface to load BGL log datasets.
 
 Authors:
     Vincent-Therrien

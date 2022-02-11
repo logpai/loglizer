@@ -1,5 +1,5 @@
 """
-The interface to load HDFS log datasets.
+The interface to load Thunderbird log datasets.
 
 Authors:
     Hans Aschenloher
@@ -38,7 +38,7 @@ def loadDataset(log_file, window='sliding', time_interval=60, stepping_size=30,
 
     # Load the file and sort lines according to time.
     df = pd.read_csv(log_file)
-    #df['Time'] = pd.to_datetime( str(df['Month'])+" " + str(df['Day']) + " " + str(df['Time']), format="%b %d %H:%M:%S")
+    df['Time'] = pd.to_datetime(df['Time'], format="%Y-%m-%d-%H.%M.%S.%f")
     df = df.sort_values(by="Timestamp")
     df.reset_index(drop=True, inplace=True)
     df['LineId'] = range(0, df.shape[0])
