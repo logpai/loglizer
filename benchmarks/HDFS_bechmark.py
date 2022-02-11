@@ -5,27 +5,28 @@ import sys
 sys.path.append('../')
 import pandas as pd
 from loglizer.models import *
-from loglizer import dataloader, preprocessing
+from loglizer import preprocessing
+from loglizer.dataloader import HDFS
 
-run_models = ['PCA', 'InvariantsMiner', 'LogClustering', 'IsolationForest', 'LR', 
+run_models = ['PCA', 'InvariantsMiner', 'LogClustering', 'IsolationForest', 'LR',
               'SVM', 'DecisionTree']
 struct_log = '../data/HDFS/HDFS.npz' # The benchmark dataset
 
 if __name__ == '__main__':
-    (x_tr, y_train), (x_te, y_test) = dataloader.load_HDFS(struct_log,
-                                                           window='session', 
-                                                           train_ratio=0.5,
-                                                           split_type='uniform')
+    (x_tr, y_train), (x_te, y_test) = HDFS.loadDataset(struct_log,
+                                                window='session',
+                                                train_ratio=0.5,
+                                                split_type='uniform')
     benchmark_results = []
     for _model in run_models:
         print('Evaluating {} on HDFS:'.format(_model))
         if _model == 'PCA':
             feature_extractor = preprocessing.FeatureExtractor()
-            x_train = feature_extractor.fit_transform(x_tr, term_weighting='tf-idf', 
+            x_train = feature_extractor.fit_transform(x_tr, term_weighting='tf-idf',
                                                       normalization='zero-mean')
             model = PCA()
             model.fit(x_train)
-        
+
         elif _model == 'InvariantsMiner':
             feature_extractor = preprocessing.FeatureExtractor()
             x_train = feature_extractor.fit_transform(x_tr)
@@ -41,7 +42,7 @@ if __name__ == '__main__':
         elif _model == 'IsolationForest':
             feature_extractor = preprocessing.FeatureExtractor()
             x_train = feature_extractor.fit_transform(x_tr)
-            model = IsolationForest(random_state=2019, max_samples=0.9999, contamination=0.03, 
+            model = IsolationForest(random_state=2019, max_samples=0.9999, contamination=0.03,
                                     n_jobs=4)
             model.fit(x_train)
 
@@ -62,7 +63,7 @@ if __name__ == '__main__':
             x_train = feature_extractor.fit_transform(x_tr, term_weighting='tf-idf')
             model = DecisionTree()
             model.fit(x_train, y_train)
-        
+
         x_test = feature_extractor.transform(x_te)
         print('Train accuracy:')
         precision, recall, f1 = model.evaluate(x_train, y_train)
