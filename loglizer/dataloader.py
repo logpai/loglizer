@@ -68,7 +68,7 @@ def load_HDFS(log_file, label_file=None, window='session', train_ratio=0.5, spli
 
     if log_file.endswith('.npz'):
         # Split training and validation set in a class-uniform way
-        data = np.load(log_file)
+        data = np.load(log_file, allow_pickle=True)
         x_data = data['x_data']
         y_data = data['y_data']
         (x_train, y_train), (x_test, y_test) = _split_data(x_data, y_data, train_ratio, split_type)
