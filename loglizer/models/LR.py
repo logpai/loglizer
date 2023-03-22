@@ -51,6 +51,20 @@ class LR(object):
         y_pred = self.classifier.predict(X)
         return y_pred
 
+    def predict_proba(self, X):
+        """ Predict anomalies with mined invariants
+
+        Arguments
+        ---------
+            X: the input event count matrix
+
+        Returns
+        -------
+            y_pred: ndarray, the predicted label vector of shape (num_instances,)
+        """
+        y_pred = self.classifier.predict_proba(X)
+        return y_pred
+
     def evaluate(self, X, y_true):
         print('====== Evaluation summary ======')
         y_pred = self.predict(X)

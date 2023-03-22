@@ -54,7 +54,7 @@ class IsolationForest(iForest):
         """
 
         super(IsolationForest, self).__init__(n_estimators=n_estimators, max_samples=max_samples, 
-            contamination=contamination, behaviour='new', **kwargs)
+            contamination=contamination, **kwargs)
 
 
     def fit(self, X):
