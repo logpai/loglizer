@@ -28,6 +28,7 @@ def get_x_y(windows, content2tempalte):
         y.append(1 if sum(y_list) > 0 else 0)
     return x, y 
 
+
 model_name = "if"
 dataname = "BGL"
 
@@ -50,12 +51,13 @@ if __name__ == "__main__":
     content2tempalte = dict(zip(parsed_result["Content"], parsed_result["EventTemplate"]))
 
     with open(os.path.join(pkl_path, "train.pkl"), "rb") as fr:
-        train_windows = pickle.load(fr)
+        train_windows = pickle.load(fr)[0:1]
     with open(os.path.join(pkl_path, "test.pkl"), "rb") as fr:
-        test_windows = pickle.load(fr)
-
+        test_windows = pickle.load(fr)[0:1]
     train_x, train_y = get_x_y(train_windows, content2tempalte)
     test_x, test_y = get_x_y(test_windows, content2tempalte)
+
+    del parsed_result, content2tempalte
 
     feature_extractor = preprocessing.FeatureExtractor()
     
