@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 ''' This is a demo file for the Invariants Mining model.
     API usage:
-        dataloader.load_HDFS(): load HDFS dataset
+        HDFS.loadDataset(): load HDFS dataset
         feature_extractor.fit_transform(): fit and transform features
         feature_extractor.transform(): feature transform after fitting
         model.fit(): fit the model
@@ -13,7 +13,9 @@
 import sys
 sys.path.append('../')
 from loglizer.models import InvariantsMiner
-from loglizer import dataloader, preprocessing
+from loglizer import preprocessing
+from loglizer import preprocessing
+from loglizer.dataloader import HDFS
 
 struct_log = '../data/HDFS/HDFS_100k.log_structured.csv' # The structured log file
 label_file = '../data/HDFS/anomaly_label.csv' # The anomaly label file
@@ -21,8 +23,8 @@ epsilon = 0.5 # threshold for estimating invariant space
 
 if __name__ == '__main__':
     # Load structured log without label info
-    (x_train, _), (x_test, _) = dataloader.load_HDFS(struct_log,
-                                                     window='session', 
+    (x_train, _), (x_test, _) = HDFS.loadDataset(struct_log,
+                                                     window='session',
                                                      train_ratio=0.5,
                                                      split_type='sequential')
     # Feature extraction
@@ -43,11 +45,11 @@ if __name__ == '__main__':
 
     # If you have labeled data, you can evaluate the accuracy of the model as well.
     # Load structured log with label info
-    (x_train, y_train), (x_test, y_test) = dataloader.load_HDFS(struct_log,
+    (x_train, y_train), (x_test, y_test) = HDFS.loadDataset(struct_log,
                                                                label_file=label_file,
-                                                               window='session', 
+                                                               window='session',
                                                                train_ratio=0.5,
-                                                               split_type='sequential')   
+                                                               split_type='sequential')
     x_test = feature_extractor.transform(x_test)
     precision, recall, f1 = model.evaluate(x_test, y_test)
 
