@@ -262,17 +262,17 @@ class InvariantsMiner(object):
         """
 
         set_len = len(item_list)
-        return_list = []
+        return_set = set()
         for i in range(set_len):
             for j in range(i + 1, set_len):
                 i_set = set(item_list[i])
                 j_set = set(item_list[j])
-                if len(i_set.union(j_set)) == length:
-                    joined = sorted(list(i_set.union(j_set)))
-                    if joined not in return_list:
-                        return_list.append(joined)
-        return_list = sorted(return_list)
-        return return_list
+                u = i_set.union(j_set)
+                if len(u) == length:
+                    joined = tuple(sorted(list(u)))
+                    return_set.add(joined)
+        return_set = sorted(return_set)
+        return return_set
 
 
     def _check_candi_valid(self, item, length, search_space):
