@@ -143,7 +143,7 @@ def load_HDFS(log_file, label_file=None, window='session', train_ratio=0.5, spli
     return (x_train, y_train), (x_test, y_test)
 
 def load_OpenStack(log_file, label_file=None, window='session', train_ratio=0.5, split_type='sequential', save_csv=False, window_size=0):
-    """ Load HDFS structured log into train and test data
+    """ Load OpenStack structured log into train and test data
 
     Arguments
     ---------
