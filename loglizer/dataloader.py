@@ -171,7 +171,8 @@ def load_OpenStack(log_file, label_file=None, window='session', train_ratio=0.5,
         data_dict = OrderedDict()
         for idx, row in struct_log.iterrows():
             datetime = re.search(r'(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})', row['Content'])
-            
+            if not datetime in data_dict:
+                data_dict[datetime] = []
             data_dict[datetime].append(row['EventId'])
         data_df = pd.DataFrame(list(data_dict.items()), columns=['DateTime', 'EventSequence'])
         
