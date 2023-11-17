@@ -181,7 +181,7 @@ def load_OpenStack(log_file, label_file=None, window='session', train_ratio=0.5,
             label_data = pd.read_csv(label_file, engine='c', na_filter=False, memory_map=True)
             label_data = label_data.set_index('Datetime')
             label_dict = label_data['Label'].to_dict()
-            data_df['Label'] = data_df['Datetime'].apply(lambda x: 1 if label_dict[x] == 'Anomaly' else 0)
+            data_df['Label'] = re.search(r'(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})', data_df['Date'] + data_df['Time']).apply(lambda x: 1 if label_dict[x] == 'Anomaly' else 0)
 
             # Split train and test data
             (x_train, y_train), (x_test, y_test) = _split_data(data_df['EventSequence'].values, 
